@@ -10,7 +10,7 @@ slots_global = []
 weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 
 def next_monday():
-    return datetime.now() + timedelta((0 - datetime.now().weekday()) % 7)
+    return datetime.now().replace(minute=0, second=0, hour=0) + timedelta((0 - datetime.now().weekday()) % 7)
 
 def parse_slots(start_raw: list, end_raw: list):
 	if len(start_raw) != len(end_raw): 
@@ -28,42 +28,38 @@ def parse_slots(start_raw: list, end_raw: list):
 def parse_periods(periods_raw: list):
 	day = periods_raw[0]
 	periods_raw = periods_raw[1:]
-	periods = []
-
-	for slot in periods_raw:
-		slot = slot.strip()
-		for i in slot.split("\n\n"): periods.append(i.strip())
 
 	s = 0
 	offset = weekdays.index(day)
-	for i in periods:
-		i = i.split("\n")
-		if i[0] == "": 
-			s += 1
-			continue
+	for i in periods_raw:
+		i = i.strip()
+		periods = [a.strip() for a in i.split("\n\n")]
+		
+		for j in periods:
+			j = j.split("\n")
+			if j[0] == "": continue
 
-		period_curr = {
-			'name': i[0].strip(),
-			'start': (starting_date + timedelta(days=offset) + slots_global[s][0]).strftime("%Y-%m-%d %H:%M:%S%z"),
-			'end': (starting_date + timedelta(days=offset) + slots_global[s][1]).strftime("%Y-%m-%d %H:%M:%S%z"),
-			'desc': "\n".join(i[1:]).strip(),
-			'assign': "subject"
-		}
+			period_curr = {
+				'name': j[0].strip(),
+				'start': (starting_date + timedelta(days=offset) + slots_global[s][0]).strftime("%Y-%m-%d %H:%M:%S%z"),
+				'end': (starting_date + timedelta(days=offset) + slots_global[s][1]).strftime("%Y-%m-%d %H:%M:%S%z"),
+				'desc': "\n".join(j[1:]).strip() + f"\n\nday:{day}, offset:{offset}, s:{s}",
+				'assign': "subject"
+			}
 
-		if period_curr['name'][0] == '@':
-			period_curr['assign'] = 'all'
-			period_curr['name'] = period_curr['name'][1:]
+			if period_curr['name'][0] == '@':
+				period_curr['assign'] = 'all'
+				period_curr['name'] = period_curr['name'][1:]
 
-		if period_curr['desc'] != "" and period_curr['desc'][0] == '!':
-			x = period_curr['desc'].split("!")
-			period_curr['desc'] = {}
-			for i in x[1:]: 
-				a = i.split("\n")
-				period_curr['desc'][a[0]] = a[1]
+			if period_curr['desc'] != "" and period_curr['desc'][0] == '!':
+				x = period_curr['desc'].split("!")
+				period_curr['desc'] = {}
+				for k in x[1:]: 
+					a = k.split("\n")
+					period_curr['desc'][a[0]] = a[1]
 
-		periods_global.append(period_curr)
+			periods_global.append(period_curr)
 		s += 1
-		s = s % len(slots_global)
 	return 0
 
 nm_prompt = next_monday()

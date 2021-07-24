@@ -53,10 +53,9 @@ def tts():
 	data = []
 	cursor = tts_col.find({})
 	for doc in cursor:
-		data.append({
-			"id": doc.id,
-			"date": doc.starting_date
-		})
+		data.append(datetime.strptime(doc.starting_date, "%d %b %Y"))
+
+	data = reversed(sorted(data))
 
 	return {'data': data}, 200
 if __name__ == "__main__":
