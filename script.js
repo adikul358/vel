@@ -23,6 +23,7 @@ $("#export-button").click(function () {
 	})
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/api/ics', true);
+	xhr.contentType = 'application/json';
 	xhr.responseType = 'blob';
 	xhr.onload = function (e) {
 		var blob = e.currentTarget.response;
