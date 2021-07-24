@@ -1,15 +1,8 @@
-function saveOrOpenBlob(blob, fileName) {
-	window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-	window.requestFileSystem(window.TEMPORARY, 1024 * 1024, function (fs) {
-		fs.root.getFile(fileName, { create: true }, function (fileEntry) {
-			fileEntry.createWriter(function (fileWriter) {
-				fileWriter.addEventListener("writeend", function () {
-					window.location = fileEntry.toURL();
-				}, false);
-				fileWriter.write(blob, "_blank");
-			}, function () { });
-		}, function () { });
-	}, function () { });
+function saveBlob(blob, fileName) {
+	var a = document.createElement('a');
+	a.href = window.URL.createObjectURL(blob);
+	a.download = fileName;
+	a.dispatchEvent(new MouseEvent('click'));
 }
 
 
@@ -44,7 +37,7 @@ $("#export-button").click(function () {
 		var blob = e.currentTarget.response;
 		var contentDispo = e.currentTarget.getResponseHeader('Content-Disposition');
 		var fileName = contentDispo.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1];
-		saveOrOpenBlob(blob, fileName);
+		saveBlob(blob, fileName);
 	}
 	xhr.send(payload);
 });
