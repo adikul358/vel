@@ -6,3 +6,4 @@ pyvenv.cfg
 vel.ini
 .DS_Store
 .vscode
+vel.sock
