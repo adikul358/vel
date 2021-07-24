@@ -1,8 +1,7 @@
 from datetime import timedelta
 from ics import Calendar, Event
 from ics.alarm import DisplayAlarm
-from flask import Flask, request
-from flask import send_file, send_from_directory, safe_join, abort
+from flask import Flask, request, send_from_directory
 from pymongo import MongoClient
 from uuid import uuid1
 
@@ -12,7 +11,7 @@ tts_col = db['tts']
 
 
 def generate_periods(starting_date: str, section: str, subjects: list):
-	periods_raw = tts_col.find({"starting_date": starting_date})['periods_raw']
+	periods_raw = tts_col.find_one({"starting_date": starting_date})['periods_raw']
 	periods_out = []
 	for i in periods_raw:
 		if i['assign'] == "all" or i['name'].lower() in subjects:
