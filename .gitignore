@@ -1,0 +1,6 @@
+__pycache__
+velenv
+
+*.numbers
+pyvenv.cfg
+vel.ini
