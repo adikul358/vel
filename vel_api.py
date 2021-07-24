@@ -35,7 +35,7 @@ def generate_ics(periods_in: list):
 		c.events.add(e)
 	
 	ics_filename = f'{uuid1().hex}.ics'
-	ics_file = open(f'gen-csv/ics_filename', 'w')
+	ics_file = open(f'gen-csv/{ics_filename}', 'w')
 	ics_file.writelines(c)
 
 	return ics_filename
