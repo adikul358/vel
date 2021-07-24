@@ -43,7 +43,7 @@ def parse_periods(periods_raw: list):
 				'name': j[0].strip(),
 				'start': (starting_date + timedelta(days=offset) + slots_global[s][0]).strftime("%Y-%m-%d %H:%M:%S%z"),
 				'end': (starting_date + timedelta(days=offset) + slots_global[s][1]).strftime("%Y-%m-%d %H:%M:%S%z"),
-				'desc': "\n".join(j[1:]).strip() + f"\n\nday:{day}, offset:{offset}, s:{s}",
+				'desc': "\n".join(j[1:]).strip(),
 				'assign': "subject"
 			}
 
