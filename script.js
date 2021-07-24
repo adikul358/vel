@@ -1,3 +1,16 @@
+$.ajax({
+	type: 'POST',
+	url: '/api/tts',
+	success: function (data) {
+		data.data.forEach(function (ttDate) {
+			$("#timetable").append('<option value="${ttDate}">${ttDate}</option>')
+		})
+		console.log(data);
+	},
+	contentType: "application/json",
+	dataType: 'json'
+});
+
 $("#export-button").click(function () {
 	var selectedValues = [];
 	$("#subjects :selected").each(function () {
