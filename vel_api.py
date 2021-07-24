@@ -72,7 +72,8 @@ def ics():
 
 	periods = generate_periods(req_date, req_section, req_subjects)
 	ics_file = generate_ics(periods)
-
+	
+	print(f'Sending file {app.config["CLIENT_CSV"]}{ics_file}')
 	return send_from_directory(directory=app.config["CLIENT_CSV"], path=ics_file, as_attachment=True), 200
 
 
