@@ -34,10 +34,11 @@ def generate_ics(periods_in: list):
 		e.alarms = [DisplayAlarm(trigger=timedelta(minutes=-5)), DisplayAlarm(trigger=datetime.strptime(i['start'], "%Y-%m-%d %H:%M:%S%z"))]
 		c.events.add(e)
 	
-	ics_file = open(f'gen-csv/{uuid1().hex}.ics', 'w')
+	ics_filename = f'{uuid1().hex}.ics'
+	ics_file = open(ics_filename, 'w')
 	ics_file.writelines(c)
 
-	return ics_file
+	return ics_filename
 
 
 # ===============================================================================
