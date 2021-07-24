@@ -20,6 +20,7 @@ $("#export-button").click(function () {
 		type: 'POST',
 		url: '/api/ics',
 		data: JSON.stringify({
+			date: $("#timetable option:selected").val(),
 			section: $("#section option:selected").val(),
 			subjects: selectedValues
 		}),
