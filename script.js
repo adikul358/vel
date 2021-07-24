@@ -3,7 +3,7 @@ $.ajax({
 	url: '/api/tts',
 	success: function (data) {
 		data.data.forEach(function (ttDate) {
-			$("#timetable").append('<option value="${ttDate}">${ttDate}</option>')
+			$("#timetable").append(`<option value="${ttDate}">${ttDate}</option>`)
 		})
 		console.log(data);
 	},
