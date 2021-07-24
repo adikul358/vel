@@ -2,8 +2,13 @@
 	display: none;
 }
 
+#footer {
+	min-height: 50px;
+	margin-top: auto;
+}
+
 .main-modal {
- 	display: none;
+	display: none;
 }
 
 .animated {
