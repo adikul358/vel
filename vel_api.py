@@ -55,7 +55,8 @@ def tts():
 	for doc in cursor:
 		data.append(datetime.strptime(doc['starting_date'], "%d %b %Y"))
 
-	data = reversed(sorted(data))
+	data = sorted(data, reverse=True)
+	data = [i.strftime("%d %b %Y") for i in data]
 
 	return {'data': data}, 200
 if __name__ == "__main__":
