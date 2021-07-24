@@ -4,3 +4,4 @@ velenv
 *.numbers
 pyvenv.cfg
 vel.ini
+.DS_Store
