@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VEL - School Calendar Utility</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.4/tailwind.min.css'>
+	<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="flex h-screen justify-center bg-gray-900">
+	<div class="flex flex-col w-full max-w-screen-md p-5 justify-center">
+		<div class="flex flex-row flex-wrap mt-6">
+
+			<p class="text-5xl text-gray-300 text-center mb-6 font-bold">VEL</p>
+			<img src="https://i.imgur.com/yVzjV22.png" class="ml-auto h-8">
+
+		</div>
+
+		<p class="text-2xl text-gray-300">Timetable</p>
+		<select name="timetable" id="timetable" class="form-select px-4 py-3  rounded bg-gray-700 text-gray-300 w-36 mt-2">
+			<option value="20210726">26 Jul 2021</option>
+			<option value="20210719">19 Jul 2021</option>
+			<option value="20210712">12 Jul 2021</option>
+		</select>
+
+		<p class="text-2xl text-gray-300 mt-4">Section</p>
+		<select name="section" id="section" class="form-select px-4 py-3  rounded bg-gray-700 text-gray-300 w-32 mt-2">
+			<option value="Corbett">Corbett</option>
+			<option value="Sariska">Sariska</option>
+			<option value="Gir">Gir</option>
+		</select>
+
+		<p class="text-2xl text-gray-300 mt-4">Subjects</p>
+		<p class="text-base text-gray-400">Press ctrl/cmd for multi-select</p>
+		<select name="subjects" id="subjects" class="form-multiselect px-4 py-3  rounded bg-gray-700 text-gray-300 h-64 mt-3" multiple>
+			<option value="accounts">Accounts</option>
+			<option value="biology">Biology</option>
+			<option value="business studies (a)">Business Studies (A)</option>
+			<option value="business studies (b)">Business Studies (B)</option>
+			<option value="chemistry">Chemistry</option>
+			<option value="computer science">Computer Science</option>
+			<option value="economics (a)">Economics (A)</option>
+			<option value="economics (b)">Economics (B)</option>
+			<option value="english (a)">English (A)</option>
+			<option value="english (b)">English (B)</option>
+			<option value="english (c)">English (C)</option>
+			<option value="entrepreneurship">Entrepreneurship</option>
+			<option value="fine arts">Fine Arts</option>
+			<option value="geography">Geography</option>
+			<option value="hindi">Hindi</option>
+			<option value="history">History</option>
+			<option value="home science">Home Science</option>
+			<option value="informatics practices (a)">Informatics Practices (A)</option>
+			<option value="informatics practices (b)">Informatics Practices (B)</option>
+			<option value="math (a) - applied">Math (A) - Applied</option>
+			<option value="math (a) - standard">Math (A) - Standard</option>
+			<option value="math (b) - applied">Math (B) - Applied</option>
+			<option value="math (b) - standard">Math (B) - Standard</option>
+			<option value="pe">PE</option>
+			<option value="physics">Physics</option>
+			<option value="political science">Political Science</option>
+			<option value="psychology (a)">Psychology (A)</option>
+			<option value="psychology (b)">Psychology (B)</option>
+			<option value="psychology (c)">Psychology (C)</option>
+			<option value="sanskrit">Sanskrit</option>
+			<option value="sociology">Sociology</option>
+			<option value="spanish">Spanish</option>
+
+		</select>
+
+		<div class="flex flex-row flex-wrap mt-6">
+			<div class="justify-self-start">
+				<button class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-3 py-2 mr-3" id="export-button">Export Events</button>
+				<button class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-3 py-2" id="print-button">Print Events</button>
+			</div>
+
+			<div class="ml-auto">
+				<button onclick="openModal()" class="bg-transparent hover:bg-gray-800 border-gray-300 border-2 text-gray-300 rounded px-3 py-2" id="print-button">Subscribe</button>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+
+<div class="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background: rgba(0,0,0,.7);">
+	<div class="shadow-lg modal-container bg-gray-900 w-full max-w-xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
+		<div class="modal-content py-4 text-left px-6">
+			<div class="flex justify-between items-center pb-3">
+				<p class="text-2xl font-bold text-gray-300">Subscribe</p>
+				<div class="modal-close cursor-pointer z-50">
+					<svg class="fill-current text-gray-300" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+						<path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z">
+						</path>
+					</svg>
+				</div>
+			</div>
+
+			<div class="my-5">
+				<div class="table w-full ...">
+					<div class="table-row-group">
+						<div class="table-row">
+							<div class="table-cell text-l pr-3 font-bold text-gray-300">Class</div>
+							<div class="table-cell text-l p-2 text-gray-300">12 Corbett</div>
+						</div>
+						<div class="table-row">
+							<div class="table-cell text-l pr-3 font-bold text-gray-300">Subjects</div>
+							<div class="table-cell text-l p-2 mb-3 text-gray-300">Chemistry, Economics (B), English (A), Math (A) - Standard, Physics</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="flex justify-end pt-2">
+				<button class="modal-close bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-3 py-2">Confirm</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+	<script src="./script.js"></script>
+
+</body>
+</html>
