@@ -38,7 +38,9 @@ def parse_periods(periods_raw: list):
 	offset = weekdays.index(day)
 	for i in periods:
 		i = i.split("\n")
-		if i[0] == "": continue
+		if i[0] == "": 
+			s += 1
+			continue
 
 		period_curr = {
 			'name': i[0].strip(),
