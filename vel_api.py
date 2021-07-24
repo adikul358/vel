@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from ics import Calendar, Event
 from ics.alarm import DisplayAlarm
 from flask import Flask, request, send_from_directory
@@ -31,7 +31,7 @@ def generate_ics(periods_in: list):
 		e.begin = i['start']
 		e.end = i['end']
 		e.description = i['desc']
-		e.alarms = [DisplayAlarm(trigger=timedelta(minutes=-5)), DisplayAlarm(trigger=i['start'])]
+		e.alarms = [DisplayAlarm(trigger=timedelta(minutes=-5)), DisplayAlarm(trigger=datetime.strptime(i['start'], "%Y-%m-%d %H:%M:%S%z"))]
 		c.events.add(e)
 	
 	ics_file = open(f'gen-csv/{uuid1().hex}.ics', 'w')
