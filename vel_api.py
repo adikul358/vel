@@ -72,7 +72,7 @@ def ics():
 	periods = generate_periods(req_date, req_section, req_subjects)
 	ics_file = generate_ics(periods)
 
-	return send_from_directory(app.config["CLIENT_IMAGES"], filename=ics_file, as_attachment=True), 200
+	return send_from_directory(app.config["CLIENT_CSV"], filename=ics_file, as_attachment=True), 200
 
 
 
