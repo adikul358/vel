@@ -10,9 +10,9 @@
 	<link rel="stylesheet" href="./style.css">
 </head>
 
-<body class="bg-gray-900">
-	<div class="flex h-screen justify-center ">
-		<div class="flex flex-col w-full max-w-screen-md p-5 justify-center">
+<body class="h-screen flex flex-col bg-gray-900">
+	<div class="flex flex-col items-center justify-between">
+		<div class="flex flex-col w-full max-w-screen-md px-5 py-6 justify-center">
 			<div class="mb-6 flex items-start flex-row items-center flex-wrap mt-6">
 				<p class="text-5xl text-gray-300 font-bold">VEL</p>
 				<img src="https://i.imgur.com/yVzjV22.png" class="md:h-8 sm:h-6 ml-auto h-5">
@@ -74,13 +74,17 @@
 			</select>
 
 			<div class="mt-6 flex justify-end">
-				<button onclick="openModal()" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-3 py-2" id="export-button">Export
+				<button onclick="openModal()" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-3 py-2"
+					id="export-button">Export
 					Events</button>
 			</div>
 
 		</div>
 	</div>
 
+	<div class="flex w-full bg-black justify-self-end p-3 justify-center" id="footer">
+		<p class="text-m text-white font-thin">Made by <a class="text-blue-600 hover:text-blue-700"
+				href="https://github.com/adikul358">Aditya Kulshrestha</a></p>
 	</div>
 
 	<div
@@ -113,7 +117,6 @@
 								class="underline hover:text-gray-400 leading-8">Apple Calendar (macOS)</a></li>
 					</ul>
 				</div>
-
 
 			</div>
 		</div>
