@@ -16,6 +16,11 @@ $("#export-button").click(function () {
 	$("#subjects :selected").each(function () {
 		selectedValues.push($(this).val());
 	});
+	payload = JSON.stringify({
+		date: $("#timetable option:selected").val(),
+		section: $("#section option:selected").val(),
+		subjects: selectedValues
+	})
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/api/ics', true);
 	xhr.responseType = 'blob';
@@ -25,11 +30,7 @@ $("#export-button").click(function () {
 		var fileName = contentDispo.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1];
 		saveOrOpenBlob(blob, fileName);
 	}
-	xhr.send(JSON.stringify({
-		date: $("#timetable option:selected").val(),
-		section: $("#section option:selected").val(),
-		subjects: selectedValues
-	}));
+	xhr.send(payload);
 });
 
 const modal = document.querySelector(".main-modal");
