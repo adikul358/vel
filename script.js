@@ -1,3 +1,18 @@
+function saveOrOpenBlob(blob, fileName) {
+	window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+	window.requestFileSystem(window.TEMPORARY, 1024 * 1024, function (fs) {
+		fs.root.getFile(fileName, { create: true }, function (fileEntry) {
+			fileEntry.createWriter(function (fileWriter) {
+				fileWriter.addEventListener("writeend", function () {
+					window.location = fileEntry.toURL();
+				}, false);
+				fileWriter.write(blob, "_blank");
+			}, function () { });
+		}, function () { });
+	}, function () { });
+}
+
+
 $.ajax({
 	type: 'POST',
 	url: '/api/tts',
