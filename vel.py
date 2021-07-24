@@ -5,6 +5,7 @@ import json
 import copy
 from dateutil import tz
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 
 periods_global = []
 slots_global = []
@@ -14,6 +15,8 @@ weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 
 # Flask API Setup
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Parse slots array with timings and period numbers.
 #
@@ -92,6 +95,7 @@ def generate_ics(periods_raw: list):
 	return 0
 
 @app.route('/api/ics', methods=['POST'])
+@cross_origin()
 def ics():
 	request_data = request.get_json()
 	req_section = request_data['section']
