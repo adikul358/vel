@@ -4,15 +4,17 @@ $("#export-button").click(function () {
 		selectedValues.push($(this).val());
 	});
 	$.ajax({
-    type: 'POST',
-    url: '/api/ics',
-    data: JSON.stringify({
+		type: 'POST',
+		url: '/api/ics',
+		data: JSON.stringify({
 			section: $("#section option:selected").val(),
 			subjects: selectedValues
 		}),
-    success: function(data) { alert(JSON.stringify(data)); console.log(data); },
-    contentType: "application/json",
-    dataType: 'json'
+		success: function (data) {
+			console.log(data);
+		},
+		contentType: "application/json",
+		dataType: 'json'
 	});
 });
 
@@ -35,7 +37,7 @@ const openModal = () => {
 
 for (let i = 0; i < closeButton.length; i++) {
 	const elements = closeButton[i];
-	elements.onclick = (e) => modalClose();	
+	elements.onclick = (e) => modalClose();
 	window.onclick = function (event) {
 		if (event.target == modal) modalClose();
 	};
