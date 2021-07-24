@@ -24,11 +24,36 @@ $("#export-button").click(function () {
 			section: $("#section option:selected").val(),
 			subjects: selectedValues
 		}),
-		success: function (data) {
-			console.log(data);
+		cache: false,
+		xhr: function () {
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState == 2) {
+					if (xhr.status == 200) {
+						xhr.responseType = "blob";
+					} else {
+						xhr.responseType = "text";
+					}
+				}
+			};
+			return xhr;
 		},
-		contentType: "application/json",
-		dataType: 'json'
+		success: function (data) {
+			var blob = new Blob([data], { type: "application/octetstream" });
+			var isIE = false || !!document.documentMode;
+			if (isIE) {
+				window.navigator.msSaveBlob(blob, fileName);
+			} else {
+				var url = window.URL || window.webkitURL;
+				link = url.createObjectURL(blob);
+				var a = $("<a />");
+				a.attr("download", fileName);
+				a.attr("href", link);
+				$("body").append(a);
+				a[0].click();
+				$("body").remove(a);
+			}
+		}
 	});
 });
 
