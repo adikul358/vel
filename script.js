@@ -19,11 +19,6 @@ $("#export-button").click(function () {
 	$.ajax({
 		type: 'POST',
 		url: '/api/ics',
-		data: JSON.stringify({
-			date: $("#timetable option:selected").val(),
-			section: $("#section option:selected").val(),
-			subjects: selectedValues
-		}),
 		cache: false,
 		xhr: function () {
 			var xhr = new XMLHttpRequest();
@@ -36,6 +31,11 @@ $("#export-button").click(function () {
 					}
 				}
 			};
+			xhr.send(JSON.stringify({
+				date: $("#timetable option:selected").val(),
+				section: $("#section option:selected").val(),
+				subjects: selectedValues
+			}))
 			return xhr;
 		},
 		success: function (data) {
