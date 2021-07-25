@@ -5,8 +5,10 @@ from flask import Flask, request, send_from_directory
 from pymongo import MongoClient
 from uuid import uuid1
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-client = MongoClient(f'mongodb://admin:{os.environ.get("MONGO_PASSWORD")}@localhost:27017/?authSource=admin')
+client = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin')
 db = client.vel
 tts_col = db['tts']
 log_col = db['log']

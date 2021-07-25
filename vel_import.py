@@ -3,8 +3,11 @@ import csv
 from dateutil import tz
 from pymongo import MongoClient
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-client = MongoClient(f'mongodb://admin:{os.environ.get("MONGO_PASSWORD")}@148.72.212.83:27017/?authSource=admin')
+
+client = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@148.72.212.83:27017/?authSource=admin')
 db = client.vel
 
 periods_global = []
