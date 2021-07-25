@@ -73,7 +73,7 @@ else:
 
 starting_date = starting_date.replace(tzinfo=tz.tzoffset('IST', 5.5*60*60))
 
-with open('vel_w30.csv') as csv_file:
+with open('raw-csv/vel_w31.csv') as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	line_count = 0
 	slots_start_row = []
