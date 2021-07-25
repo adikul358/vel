@@ -11,11 +11,12 @@ tts_col = db['tts']
 log_col = db['log']
 
 
-def log_stat(starting_date: str, section: str, subjects: list):
+def log_stat(starting_date: str, section: str, subjects: list, ics: str):
 	result = log_col.insert_one({
 		"starting_date": starting_date,
 		"section": section,
 		"subjects": subjects,
+		"ics": ics
 	})
 	print(f'Logged Entry for {section}. {result.inserted_id}')
 
@@ -85,7 +86,7 @@ def ics():
 	periods = generate_periods(req_date, req_section, req_subjects)
 	ics_file = generate_ics(periods)
 
-	log_result = log_stat(req_date, req_section, req_subjects)
+	log_result = log_stat(req_date, req_section, req_subjects, ics_file)
 
 	print(f'Sending file {app.config["CLIENT_CSV"]}{ics_file}')
 	return send_from_directory(directory=app.config["CLIENT_CSV"], path=ics_file, as_attachment=True), 200
