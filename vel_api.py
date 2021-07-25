@@ -8,6 +8,18 @@ from uuid import uuid1
 client = MongoClient("mongodb://admin:lorem@148.72.212.83:27017/?authSource=admin")
 db = client.vel
 tts_col = db['tts']
+log_col = db['log']
+
+
+def log_stat(starting_date: str, section: str, subjects: list):
+	result = log_col.insert_one({
+		"starting_date": starting_date,
+		"section": section,
+		"subjects": subjects,
+	})
+	print(f'Logged Entry for {section}. {result.inserted_id}')
+
+	return 1
 
 
 def generate_periods(starting_date: str, section: str, subjects: list):
