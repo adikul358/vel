@@ -8,3 +8,4 @@ vel.ini
 .vscode
 vel.sock
 gen-csv
+.env
