@@ -2,7 +2,9 @@ from datetime import datetime, timedelta
 import csv
 from dateutil import tz
 from pymongo import MongoClient
-client = MongoClient("mongodb://admin:lorem@148.72.212.83:27017/?authSource=admin")
+import os
+
+client = MongoClient(f'mongodb://admin:{os.environ.get("MONGO_PASSWORD")}@148.72.212.83:27017/?authSource=admin')
 db = client.vel
 
 periods_global = []
