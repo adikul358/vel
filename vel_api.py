@@ -4,6 +4,7 @@ from ics.alarm import DisplayAlarm
 from flask import Flask, request, send_from_directory
 from pymongo import MongoClient
 from uuid import uuid1
+import os
 
 client = MongoClient(f'mongodb://admin:{os.environ.get("MONGO_PASSWORD")}@localhost:27017/?authSource=admin')
 db = client.vel
