@@ -51,7 +51,9 @@ def generate_ics(periods_in: list):
 		c.events.add(e)
 	
 	ics_filename = f'{uuid1().hex}.ics'
-	ics_file = open(f'gen-csv/{ics_filename}', 'w')
+
+	if not os.path.exists(app.config["CLIENT_ICS"]): os.mkdirs(app.config["CLIENT_ICS"])
+	ics_file = open(f'{app.config["CLIENT_ICS"]}{ics_filename}', 'w')
 	ics_file.writelines(c)
 
 	return ics_filename
@@ -61,7 +63,7 @@ def generate_ics(periods_in: list):
 
 # Flask API Setup
 app = Flask(__name__)
-app.config["CLIENT_CSV"] = "/var/www/vel/gen-csv/"
+app.config["CLIENT_ICS"] = "/var/www/vel/gen-ics/"
 
 # API Endpoint: Return available timetables
 @app.route('/api/tts', methods=['POST'])
@@ -91,10 +93,10 @@ def ics():
 
 	log_result = log_stat(req_date, req_section, req_subjects, ics_file)
 
-	print(f'Sending file {app.config["CLIENT_CSV"]}{ics_file}')
-	return send_from_directory(directory=app.config["CLIENT_CSV"], path=ics_file, as_attachment=True), 200
+	print(f'Sending file {app.config["CLIENT_ICS"]}{ics_file}')
+	return send_from_directory(directory=app.config["CLIENT_ICS"], path=ics_file, as_attachment=True), 200
 
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',port=5001)
