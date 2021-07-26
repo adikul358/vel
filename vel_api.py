@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from flask.wrappers import Response
 from ics import Calendar, Event
 from ics.alarm import DisplayAlarm
 from flask import Flask, request, send_from_directory
@@ -98,11 +99,12 @@ def ics():
 # API Endpoint: Process Google Calendar Sign in
 @app.route('/api/signin', methods=['POST'])
 def signin():
-	request_data = request.get_json()
+	request_data = request
 	print("Success, data received")
+	print(request)
 	print(request_data)
 
-	return 200
+	return Response(status=200)
 
 
 
