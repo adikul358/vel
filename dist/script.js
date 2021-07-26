@@ -59,6 +59,12 @@ const openModal = () => {
 	modal.style.display = "flex";
 };
 
+const googleLogin = () => {
+	modal.classList.remove("fadeOut");
+	modal.classList.add("fadeIn");
+	modal.style.display = "flex";
+};
+
 for (let i = 0; i < closeButton.length; i++) {
 	const elements = closeButton[i];
 	elements.onclick = (e) => modalClose();
