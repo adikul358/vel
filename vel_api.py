@@ -99,9 +99,8 @@ def ics():
 # API Endpoint: Process Google Calendar Sign in
 @app.route('/api/signin', methods=['POST'])
 def signin():
-	request_data = request
+	request_data = request.get_data()
 	print("Success, data received")
-	print(request)
 	print(request_data)
 
 	return Response(status=200)
