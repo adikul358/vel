@@ -10,3 +10,5 @@ vel.ini
 vel.sock
 gen-csv
 .env
+
+*.apps.googleusercontent.com.json

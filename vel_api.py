@@ -4,7 +4,11 @@ from ics import Calendar, Event
 from ics.alarm import DisplayAlarm
 from flask import Flask, request, send_from_directory
 from pymongo import MongoClient
+from apiclient import discovery
+import httplib2
+from oauth2client import client
 from uuid import uuid1
+import json
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -103,7 +107,24 @@ def signin():
 	print("Success, data received")
 	print(request_data)
 
-	return Response(status=200)
+	if not request.headers.get('X-Requested-With'): return Response(status=403)
+
+	credentials = client.credentials_from_clientsecrets_and_code(
+			os.getenv('CLIENT_SECRET_FILE'),
+			['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
+			auth_code)
+
+	http_auth = credentials.authorize(httplib2.Http())
+	drive_service = discovery.build('drive', 'v3', http=http_auth)
+	appfolder = drive_service.files().get(fileId='appfolder').execute()
+
+	userid = credentials.id_token['sub']
+	email = credentials.id_token['email']
+
+	return Response(json.dump({
+		'userID': userid,
+		'email': email
+	}), status=200)
 
 
 
