@@ -112,7 +112,7 @@ def signin():
 	credentials = client.credentials_from_clientsecrets_and_code(
 			os.getenv('CLIENT_SECRET_FILE'),
 			['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
-			auth_code)
+			request_data)
 
 	http_auth = credentials.authorize(httplib2.Http())
 	drive_service = discovery.build('drive', 'v3', http=http_auth)
