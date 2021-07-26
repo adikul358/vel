@@ -90,7 +90,7 @@ def ics():
 	periods = generate_periods(req_date, req_section, req_subjects)
 	ics_file = generate_ics(periods)
 
-	log_result = log_stat(req_date, req_section, req_subjects, ics_file)
+	# log_result = log_stat(req_date, req_section, req_subjects, ics_file)
 
 	print(f'Sending file {os.getenv("CLIENT_ICS")}{ics_file}')
 	return send_from_directory(directory=os.getenv("CLIENT_ICS"), path=ics_file, as_attachment=True), 200
