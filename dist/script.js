@@ -1,10 +1,11 @@
-function saveBlob(blob, fileName) {
+// API
+
+const saveBlob = (blob, fileName) => {
 	var a = document.createElement('a');
 	a.href = window.URL.createObjectURL(blob);
 	a.download = fileName;
 	a.dispatchEvent(new MouseEvent('click'));
 }
-
 
 $.ajax({
 	type: 'POST',
@@ -42,33 +43,50 @@ $("#export-button").click(function () {
 	xhr.send(payload);
 });
 
-const modal = document.querySelector(".main-modal");
-const closeButton = document.querySelectorAll(".modal-close");
 
-const modalClose = () => {
-	modal.classList.remove("fadeIn");
-	modal.classList.add("fadeOut");
+
+
+// UI
+
+const modal = document.querySelectorAll(".modal");
+const importModal = document.querySelector(".import-modal");
+const integrationModal = document.querySelector(".integration-modal");
+const importCloseButton = document.querySelectorAll(".import-modal-close");
+const integrationCloseButton = document.querySelectorAll(
+	".integration-modal-close"
+);
+
+const modalClose = (e) => {
+	e.classList.remove("fadeIn");
+	e.classList.add("fadeOut");
 	setTimeout(() => {
-		modal.style.display = "none";
+		e.style.display = "none";
 	}, 500);
 };
 
-const openModal = () => {
-	modal.classList.remove("fadeOut");
-	modal.classList.add("fadeIn");
-	modal.style.display = "flex";
+const openImportModal = () => {
+	importModal.classList.remove("fadeOut");
+	importModal.classList.add("fadeIn");
+	importModal.style.display = "flex";
 };
 
-const googleLogin = () => {
-	modal.classList.remove("fadeOut");
-	modal.classList.add("fadeIn");
-	modal.style.display = "flex";
+const openIntegrationModal = () => {
+	integrationModal.classList.remove("fadeOut");
+	integrationModal.classList.add("fadeIn");
+	integrationModal.style.display = "flex";
 };
 
-for (let i = 0; i < closeButton.length; i++) {
-	const elements = closeButton[i];
-	elements.onclick = (e) => modalClose();
-	window.onclick = function (event) {
-		if (event.target == modal) modalClose();
-	};
+for (let i = 0; i < importCloseButton.length; i++) {
+	const elements = importCloseButton[i];
+	elements.onclick = (e) => modalClose(importModal);
 }
+
+for (let i = 0; i < integrationCloseButton.length; i++) {
+	const elements = integrationCloseButton[i];
+	elements.onclick = (e) => modalClose(integrationModal);
+}
+
+window.onclick = function (event) {
+	if (event.target == importModal) modalClose(importModal);
+	if (event.target == integrationModal) modalClose(integrationModal);
+};
