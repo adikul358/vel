@@ -13,8 +13,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-client = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin')
-db = client.vel
+db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
 log_col = db['log']
 
@@ -110,9 +109,9 @@ def signin():
 	if not request.headers.get('X-Requested-With'): return Response(status=403)
 
 	credentials = client.credentials_from_clientsecrets_and_code(
-			os.getenv('CLIENT_SECRET_FILE'),
-			['https://www.googleapis.com/auth/calendar.events', 'profile', 'email'],
-			request_data)
+		os.getenv('CLIENT_SECRET_FILE'),
+		['https://www.googleapis.com/auth/calendar.events', 'profile', 'email'],
+		request_data)
 
 	http_auth = credentials.authorize(httplib2.Http())
 	userid = credentials.id_token['sub']
