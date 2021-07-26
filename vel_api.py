@@ -52,7 +52,7 @@ def generate_ics(periods_in: list):
 	
 	ics_filename = f'{uuid1().hex}.ics'
 
-	if not os.path.exists(os.getenv("CLIENT_ICS")): os.mkdirs(os.getenv("CLIENT_ICS"))
+	if not os.path.exists(os.getenv("CLIENT_ICS")): os.mkdir(os.getenv("CLIENT_ICS"))
 	ics_file = open(f'{os.getenv("CLIENT_ICS")}{ics_filename}', 'w')
 	ics_file.writelines(c)
 
