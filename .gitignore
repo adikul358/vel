@@ -2,6 +2,7 @@ __pycache__
 velenv
 
 *.numbers
+*.pages
 pyvenv.cfg
 vel.ini
 .DS_Store
