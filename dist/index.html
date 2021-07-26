@@ -2,6 +2,22 @@
 <html lang="en">
 
 <head>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+	</script>
+	<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+	</script>
+	<script>
+		function start() {
+			gapi.load('auth2', function () {
+				auth2 = gapi.auth2.init({
+					client_id: `656751888542-qmdh6mo2rc3vcc03gr57perhmbts56i0.apps.googleusercontent.com`,
+					scope: 'https://www.googleapis.com/auth/calendar.events'
+				});
+			});
+		}
+	</script>
+
+
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Primary Meta Tags -->
@@ -173,7 +189,7 @@
 					</table>
 					<div class="flex flex-row justify-center mx-auto mt-6">
 
-						<button id="googleSigninButton"
+						<button id="googleSignInButton"
 							class="bg-gray-700 hover:bg-gray-800 rounded px-6 py-2 flex flex-row justify-center items-center">
 							<img src="https://img.icons8.com/color/48/000000/google-logo.png" class="h-5 pr-6 -ml-3">
 							<p class="text-gray-300 text-l text-center font-bold">Sign in with Google</p>
@@ -197,6 +213,29 @@
 	<!-- partial -->
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
 	<script src="./script.js"></script>
+	<script>
+		$('#googleSignInButton').click(function() {
+			auth2.grantOfflineAccess().then(signInCallback);
+		});
+
+		function signInCallback(authResult) {
+			if (authResult['code']) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/signin',
+					headers: {
+						'X-Requested-With': 'XMLHttpRequest'
+					},
+					contentType: 'application/octet-stream; charset=utf-8',
+					success: function(result) {
+					},
+					processData: false,
+					data: authResult['code']
+				});
+			}
+		}
+	</script>
+	
 
 </body>
 

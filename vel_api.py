@@ -95,6 +95,15 @@ def ics():
 	print(f'Sending file {os.getenv("CLIENT_ICS")}{ics_file}')
 	return send_from_directory(directory=os.getenv("CLIENT_ICS"), path=ics_file, as_attachment=True), 200
 
+# API Endpoint: Process Google Calendar Sign in
+@app.route('/api/signin', methods=['POST'])
+def signin():
+	request_data = request.get_json()
+	print("Success, data received")
+	print(request_data)
+
+	return 200
+
 
 
 if __name__ == "__main__":
