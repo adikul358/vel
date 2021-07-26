@@ -52,8 +52,8 @@ def generate_ics(periods_in: list):
 	
 	ics_filename = f'{uuid1().hex}.ics'
 
-	if not os.path.exists(app.config["CLIENT_ICS"]): os.mkdirs(app.config["CLIENT_ICS"])
-	ics_file = open(f'{app.config["CLIENT_ICS"]}{ics_filename}', 'w')
+	if not os.path.exists(os.getenv("CLIENT_ICS")): os.mkdirs(os.getenv("CLIENT_ICS"))
+	ics_file = open(f'{os.getenv("CLIENT_ICS")}{ics_filename}', 'w')
 	ics_file.writelines(c)
 
 	return ics_filename
@@ -63,7 +63,6 @@ def generate_ics(periods_in: list):
 
 # Flask API Setup
 app = Flask(__name__)
-app.config["CLIENT_ICS"] = "/var/www/vel/gen-ics/"
 
 # API Endpoint: Return available timetables
 @app.route('/api/tts', methods=['POST'])
@@ -93,8 +92,8 @@ def ics():
 
 	log_result = log_stat(req_date, req_section, req_subjects, ics_file)
 
-	print(f'Sending file {app.config["CLIENT_ICS"]}{ics_file}')
-	return send_from_directory(directory=app.config["CLIENT_ICS"], path=ics_file, as_attachment=True), 200
+	print(f'Sending file {os.getenv("CLIENT_ICS")}{ics_file}')
+	return send_from_directory(directory=os.getenv("CLIENT_ICS"), path=ics_file, as_attachment=True), 200
 
 
 
