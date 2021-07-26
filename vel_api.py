@@ -4,18 +4,24 @@ from ics import Calendar, Event
 from ics.alarm import DisplayAlarm
 from flask import Flask, request, send_from_directory
 from pymongo import MongoClient
-from apiclient import discovery
 import httplib2
 from oauth2client import client
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from uuid import uuid1
 import json
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
 db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
 log_col = db['log']
+users_col = db['users']
 
 
 def log_stat(starting_date: str, section: str, subjects: list, ics: str):
@@ -62,6 +68,50 @@ def generate_ics(periods_in: list):
 
 	return ics_filename
 
+
+# def feed_events(periods_in: list):
+# 	creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+# 	# If there are no (valid) credentials available, let the user log in.
+# 	if not creds or not creds.valid:
+# 			if creds and creds.expired and creds.refresh_token:
+# 					creds.refresh(Request())
+# 			else:
+# 					flow = InstalledAppFlow.from_client_secrets_file(
+# 							'credentials.json', SCOPES)
+# 					creds = flow.run_local_server(port=0)
+# 			# Save the credentials for the next run
+# 			with open('token.json', 'w') as token:
+# 					token.write(creds.to_json())
+
+# 	service = build('calendar', 'v3', credentials=creds)
+
+# 	# Call the Calendar API
+# 	now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+# 	print('Getting the upcoming 10 events')
+# 	events_result = service.events().list(calendarId='primary', timeMin=now,
+# 																			maxResults=10, singleEvents=True,
+# 																			orderBy='startTime').execute()
+# 	events = events_result.get('items', [])
+
+# 	if not events:
+# 			print('No upcoming events found.')
+# 	for event in events:
+# 			start = event['start'].get('dateTime', event['start'].get('date'))
+# 			print(start, event['summary'])
+
+# 	return 0
+
+
+def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
+	result = users_col.insert_one({
+		"json_token": json_token,
+		"email": email,
+		"section": user_section,
+		"subjects": user_subjects
+	})
+	print(f'Added user {email}')
+
+	return 1
 
 # ===============================================================================
 
@@ -112,6 +162,8 @@ def signin():
 		os.getenv('CLIENT_SECRET_FILE'),
 		['https://www.googleapis.com/auth/calendar.events', 'profile', 'email'],
 		request_data)
+
+	add_user(credentials.to_json(), credentials.id_token['email'], "", [])
 
 	http_auth = credentials.authorize(httplib2.Http())
 	userid = credentials.id_token['sub']
