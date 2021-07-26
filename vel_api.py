@@ -117,7 +117,7 @@ def signin():
 	userid = credentials.id_token['sub']
 	email = credentials.id_token['email']
 
-	return Response(json.dump({
+	return Response(json.dumps({
 		'userID': userid,
 		'email': email
 	}), status=200)
