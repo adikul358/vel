@@ -32,7 +32,7 @@ def generate_periods(starting_date: str, section: str, subjects: list):
 	for i in periods_raw:
 		if i['assign'] == "all" or i['name'].lower() in subjects:
 			if type(i['desc']) == type({}):
-				if i['desc'][section]:
+				if section in i['desc'].keys():
 					i['desc'] = i['desc'][section]
 			periods_out.append(i)
 
