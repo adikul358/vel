@@ -97,7 +97,7 @@
 				<button onclick="openImportModal()" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2"
 					id="export-button">Export Events</button>
 				<button onclick="openIntegrationModal()"
-					class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2 ml-4" id="integrate-button">Integrate
+					class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2 ml-4" id="integration-button">Integrate
 					Calendar</button>
 			</div>
 
@@ -157,15 +157,17 @@
 					<p class="text-l text-gray-300">Integrate your Google Calendar with VEL to directly import all events to your
 						Google Calendar every week.</p>
 					<p class="mt-3 text-l text-gray-300">Check your selections below, these will be applied every week.</p>
-					<table class="table-fixed text-l text-gray-300 w-full mt-3">
+					<table class="table-fixed text-l text-gray-300 w-full mt-3 border-b border-t border-gray-500">
 						<tbody class="divide-y divide-gray-500">
 							<tr class="divide-x divide-gray-500">
-								<td class="w-1/4 font-bold text-right p-2">Section</td>
-								<td class="w-3/4 p-2">Corbett</tdclass>
+								<td class="w-1/4 font-bold text-right p-2 align-top">Section</td>
+								<td class="w-3/4 p-2" id="integration-section">
+									</tdclass>
 							</tr>
 							<tr class="divide-x divide-gray-500">
-								<td class="w-1/4 font-bold text-right p-2">Subjects</td>
-								<td class="w-3/4 p-2">English (A)</tdclass>
+								<td class="w-1/4 font-bold text-right p-2 align-top">Subjects</td>
+								<td class="w-3/4 p-2" id="integration-subjects">
+									</tdclass>
 							</tr>
 						</tbody>
 					</table>
@@ -186,10 +188,11 @@
 	<div class="flex flex-col w-full mt-auto py-4 items-center" style="background-color: #080b11">
 		<p class="text-s text-white font-extralight">Made by <a class="text-blue-500 hover:text-blue-600"
 				href="https://github.com/adikul358">Aditya Kulshrestha</a></p>
-		<p class="text-xs text-gray-400 font-thin mt-3"><a class="underline hover:text-gray-500"
-				target="_blank" href="/Privacy Policy - VEL.pdf">Privacy Policy</a> • <a class="underline hover:text-gray-500"
-				target="_blank" href="https://github.com/adikul358/vel">Github</a></p>
+		<p class="text-xs text-gray-400 font-thin mt-3"><a class="underline hover:text-gray-500" target="_blank"
+				href="/Privacy Policy - VEL.pdf">Privacy Policy</a> • <a class="underline hover:text-gray-500" target="_blank"
+				href="https://github.com/adikul358/vel">Github</a></p>
 	</div>
+
 
 	<!-- partial -->
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>

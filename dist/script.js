@@ -90,3 +90,14 @@ window.onclick = function (event) {
 	if (event.target == importModal) modalClose(importModal);
 	if (event.target == integrationModal) modalClose(integrationModal);
 };
+
+$("#integration-button").click(function () {
+	var subjectsStr = "";
+	$("#subjects :selected").each(function () {
+		subjectsStr += $(this).html() + ", ";
+	});
+	subjectsStr = subjectsStr.substring(0, subjectsStr.length - 2);
+
+	$("#integration-section").html($("#section :selected").val());
+	$("#integration-subjects").html(subjectsStr);
+});
