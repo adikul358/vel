@@ -126,7 +126,7 @@ def feed_events(user_data: dict, starting_date: str):
 		event = service.events().insert(calendarId=vel_calender_id, body=event).execute()
 		added_events.append(event)
 
-	return Response(json.dumps({ "calenderId": vel_calender_id, "added_events": added_events}))
+	return { "calenderId": vel_calender_id, "added_events": added_events}
 
 
 def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
