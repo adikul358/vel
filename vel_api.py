@@ -16,7 +16,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
@@ -69,12 +69,18 @@ def generate_ics(periods_in: list):
 	return ics_filename
 
 
-def feed_events(creds):
+def feed_events(user_data):
+	json_token = user_data['json_token']
+	email = user_data['email']
+	section = user_data['section']
+	subjects = user_data['subjects']
+
+	creds = client.AccessTokenCredentials.from_json(json_token)
 	http = creds.authorize(httplib2.Http())
 	service = build('calendar', 'v3', http=http)
 
 	now = datetime.utcnow().isoformat() + 'Z'
-	events_result = service.events().list(calendarId='school', timeMin=now,
+	events_result = service.events().list(calendarId='qj09nk9ejfp5d7com6rt7lguuo@group.calendar.google.com', timeMin=now,
 																			maxResults=10, singleEvents=True,
 																			orderBy='startTime').execute()
 	events = events_result.get('items', [])
@@ -153,7 +159,7 @@ def signin():
 
 	CREDENTIALS = client.credentials_from_clientsecrets_and_code(
 		os.getenv('CLIENT_SECRET_FILE'),
-		['https://www.googleapis.com/auth/calendar.events', 'profile', 'email'],
+		['https://www.googleapis.com/auth/calendar', 'profile', 'email'],
 		request_data
 	)
 
@@ -179,9 +185,7 @@ def integrate():
 	)
 
 	user_data = users_col.find_one({'email': req_email})
-	CREDENTIALS = client.AccessTokenCredentials.from_json(user_data['json_token'])
-
-	return Response(json.dumps(feed_events(CREDENTIALS)))
+	return Response(json.dumps(feed_events(user_data)))
 
 
 if __name__ == "__main__":
