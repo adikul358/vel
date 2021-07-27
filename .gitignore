@@ -11,4 +11,4 @@ vel.sock
 gen-csv
 .env
 
-*.apps.googleusercontent.com.json
+client_secret.json
