@@ -117,7 +117,7 @@ def feed_events(user_data: dict, starting_date: str):
 				'dateTime': datetime.strptime(i['start'], "%Y-%m-%d %H:%M:%S%z").strftime("%Y-%m-%dT%H:%M:%S%z")
 			},
 			'end': {
-				'dateTime': datetime.strptime(i['start'], "%Y-%m-%d %H:%M:%S%z").strftime("%Y-%m-%dT%H:%M:%S%z")
+				'dateTime': datetime.strptime(i['end'], "%Y-%m-%d %H:%M:%S%z").strftime("%Y-%m-%dT%H:%M:%S%z")
 			},
 			'reminders': {
 				'useDefault': True,
