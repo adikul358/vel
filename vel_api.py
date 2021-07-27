@@ -74,7 +74,7 @@ def feed_events(creds):
 	service = build('calendar', 'v3', http=http)
 
 	now = datetime.utcnow().isoformat() + 'Z'
-	events_result = service.events().list(calendarId='primary', timeMin=now,
+	events_result = service.events().list(calendarId='school', timeMin=now,
 																			maxResults=10, singleEvents=True,
 																			orderBy='startTime').execute()
 	events = events_result.get('items', [])
