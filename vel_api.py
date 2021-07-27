@@ -98,6 +98,13 @@ def feed_events(user_data: dict, starting_date: str):
 		created_calendar['foregroundColor'] = '#ffffff'
 		created_calendar['backgroundColor'] = '#111827'
 		updated_calendar_list_entry = service.calendarList().update(calendarId=vel_calender_id, colorRgbFormat=True, body=created_calendar).execute()
+
+		result = users_col.update_one(
+			{'email': email},
+			{'$set': {
+				'calenderId': vel_calender_id
+			}}
+		)
 	
 	user_periods = generate_periods(starting_date, section, subjects)
 	added_events = []
@@ -119,7 +126,7 @@ def feed_events(user_data: dict, starting_date: str):
 		event = service.events().insert(calendarId=vel_calender_id, body=event).execute()
 		added_events.append(event)
 
-	return Response(json.dumps({ "calenderID": vel_calender_id, "added_events": added_events}))
+	return Response(json.dumps({ "calenderId": vel_calender_id, "added_events": added_events}))
 
 
 def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
