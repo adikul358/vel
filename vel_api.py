@@ -16,7 +16,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendarList', 'profile', 'email']
+SCOPES = ['https://www.googleapis.com/auth/calendar', 'profile', 'email']
 
 db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
@@ -120,7 +120,11 @@ def check_user(email: str):
 
 	return False
 
-# ===============================================================================
+
+
+
+
+
 
 # Flask API Setup
 app = Flask(__name__)
