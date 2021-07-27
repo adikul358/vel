@@ -235,11 +235,11 @@
 						$.ajax({
 							type: 'POST',
 							url: '/api/integrate',
-							data: {
+							data: JSON.stringify({
 								email: result.email,
 								section: $("#section option:selected").val(),
 								subjects: selectedValues
-							},
+							}),
 							success: function (data) {
 								console.log(data)
 							},
