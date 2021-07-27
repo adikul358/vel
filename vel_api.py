@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+CREDENTIALS = {}
 
 db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
@@ -69,37 +70,23 @@ def generate_ics(periods_in: list):
 	return ics_filename
 
 
-# def feed_events(periods_in: list):
-# 	creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-# 	# If there are no (valid) credentials available, let the user log in.
-# 	if not creds or not creds.valid:
-# 			if creds and creds.expired and creds.refresh_token:
-# 					creds.refresh(Request())
-# 			else:
-# 					flow = InstalledAppFlow.from_client_secrets_file(
-# 							'credentials.json', SCOPES)
-# 					creds = flow.run_local_server(port=0)
-# 			# Save the credentials for the next run
-# 			with open('token.json', 'w') as token:
-# 					token.write(creds.to_json())
+def feed_events():
+	service = build('calendar', 'v3', credentials=CREDENTIALS)
 
-# 	service = build('calendar', 'v3', credentials=creds)
+	now = datetime.datetime.utcnow().isoformat() + 'Z'
+	events_result = service.events().list(calendarId='primary', timeMin=now,
+																			maxResults=10, singleEvents=True,
+																			orderBy='startTime').execute()
+	events = events_result.get('items', [])
 
-# 	# Call the Calendar API
-# 	now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-# 	print('Getting the upcoming 10 events')
-# 	events_result = service.events().list(calendarId='primary', timeMin=now,
-# 																			maxResults=10, singleEvents=True,
-# 																			orderBy='startTime').execute()
-# 	events = events_result.get('items', [])
+	events_out = []
+	if not events:
+			return 'No upcoming events found.'
+	for event in events:
+			start = event['start'].get('dateTime', event['start'].get('date'))
+			events_out.append((start, event['summary']))
 
-# 	if not events:
-# 			print('No upcoming events found.')
-# 	for event in events:
-# 			start = event['start'].get('dateTime', event['start'].get('date'))
-# 			print(start, event['summary'])
-
-# 	return 0
+	return events_out
 
 
 def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
@@ -112,6 +99,13 @@ def add_user(json_token: dict, email: str, user_section: str, user_subjects: lis
 	print(f'Added user {email}')
 
 	return 1
+
+
+def check_user(email: str):
+	result = users_col.find_one({"email": email,})
+	if result: return result
+
+	return False
 
 # ===============================================================================
 
@@ -149,7 +143,7 @@ def ics():
 	print(f'Sending file {os.getenv("CLIENT_ICS")}{ics_file}')
 	return send_from_directory(directory=os.getenv("CLIENT_ICS"), path=ics_file, as_attachment=True), 200
 
-# API Endpoint: Process Google Calendar Sign in
+# API Endpoint: Process Google Sign in
 @app.route('/api/signin', methods=['POST'])
 def signin():
 	request_data = request.get_data()
@@ -158,21 +152,34 @@ def signin():
 
 	if not request.headers.get('X-Requested-With'): return Response(status=403)
 
-	credentials = client.credentials_from_clientsecrets_and_code(
+	CREDENTIALS = client.credentials_from_clientsecrets_and_code(
 		os.getenv('CLIENT_SECRET_FILE'),
 		['https://www.googleapis.com/auth/calendar.events', 'profile', 'email'],
-		request_data)
+		request_data
+	)
 
-	add_user(credentials.to_json(), credentials.id_token['email'], "", [])
+	if not check_user(CREDENTIALS.id_token['email']): 
+		add_user(CREDENTIALS.to_json(), CREDENTIALS.id_token['email'], "", [])
 
-	http_auth = credentials.authorize(httplib2.Http())
-	userid = credentials.id_token['sub']
-	email = credentials.id_token['email']
+	return {"email": CREDENTIALS.id_token['email']}, 200
 
-	return Response(json.dumps({
-		'userID': userid,
-		'email': email
-	}), status=200)
+# API Endpoint: Feed events in to user's Google Calendar
+@app.route('/api/integrate', methods=['POST'])
+def integrate():
+	request_data = request.get_json()
+	req_email = request_data['email']
+	req_subjects = request_data['subjects']
+	req_section = request_data['section']
+
+	result = users_col.update(
+		{'email': req_email},
+		{'subjects': req_subjects, 'section': req_section}
+	)
+
+	cred_json = users_col.find_one({'email': req_email}, {'json_token':1})
+	CREDENTIALS = client.from_json(cred_json)
+
+	return feed_events()
 
 
 
