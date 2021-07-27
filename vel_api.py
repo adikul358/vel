@@ -114,7 +114,7 @@ def add_user(json_token: dict, email: str, user_section: str, user_subjects: lis
 def check_user(email: str):
 	result = users_col.find_one({"email": email})
 	if result:
-		if 'json_token' in result.keys:
+		if 'json_token' in result.keys():
 			try: 
 				creds = client.AccessTokenCredentials.from_json(result['json_token'])
 				http = creds.authorize(httplib2.Http())
