@@ -168,9 +168,12 @@ def integrate():
 	req_subjects = request_data['subjects']
 	req_section = request_data['section']
 
-	result = users_col.update(
+	result = users_col.update_one(
 		{'email': req_email},
-		{'subjects': req_subjects, 'section': req_section}
+		{'$set': {
+			'subjects': req_subjects, 
+			'section': req_section
+		}}
 	)
 
 	cred_json = users_col.find_one({'email': req_email}, {'json_token':1})
