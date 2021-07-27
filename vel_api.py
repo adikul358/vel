@@ -16,7 +16,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-SCOPES = ['https://www.googleapis.com/auth/calendar']
+SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendarList', 'profile', 'email']
 
 db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
@@ -90,8 +90,7 @@ def feed_events(user_data):
 				vel_calender_id = calendar_list_entry['id']
 				break
 		page_token = calendar_list.get('nextPageToken')
-		if not page_token:
-			break
+		if not page_token: break
 	if vel_calender_id == "":
 		calendar = {'summary': 'VEL'}
 		created_calendar = service.calendars().insert(body=calendar).execute()
@@ -158,17 +157,10 @@ def ics():
 # API Endpoint: Process Google Sign in
 @app.route('/api/signin', methods=['POST'])
 def signin():
-	request_data = request.get_data()
-	print("Success, data received")
-	print(request_data)
+	auth_code = request.get_data()
 
 	if not request.headers.get('X-Requested-With'): return Response(status=403)
-
-	CREDENTIALS = client.credentials_from_clientsecrets_and_code(
-		os.getenv('CLIENT_SECRET_FILE'),
-		['https://www.googleapis.com/auth/calendar', 'profile', 'email'],
-		request_data
-	)
+	CREDENTIALS = client.credentials_from_clientsecrets_and_code(os.getenv('CLIENT_SECRET_FILE'), SCOPES, auth_code)
 
 	if not check_user(CREDENTIALS.id_token['email']): 
 		add_user(CREDENTIALS.to_json(), CREDENTIALS.id_token['email'], "", [])
