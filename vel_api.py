@@ -100,6 +100,9 @@ def feed_events(user_data):
 
 
 def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
+	result = users_col.find_one({"email": email})
+	if result:
+		del_result = users_col.delete_one({'email': email})
 	result = users_col.insert_one({
 		"json_token": json_token,
 		"email": email,
@@ -109,21 +112,6 @@ def add_user(json_token: dict, email: str, user_section: str, user_subjects: lis
 	print(f'Added user {email}')
 
 	return 1
-
-
-def check_user(email: str):
-	result = users_col.find_one({"email": email})
-	if result:
-		if 'json_token' in result.keys():
-			try: 
-				creds = client.AccessTokenCredentials.from_json(result['json_token'])
-				http = creds.authorize(httplib2.Http())
-			except AccessTokenCredentialsError:
-				print("Invalid creds detected")
-				del_result = users_col.delete_many({'email': email})
-				return False
-	return False
-
 
 
 
@@ -170,8 +158,7 @@ def signin():
 	if not request.headers.get('X-Requested-With'): return Response(status=403)
 	CREDENTIALS = client.credentials_from_clientsecrets_and_code(os.getenv('CLIENT_SECRET_FILE'), SCOPES, auth_code)
 
-	if not check_user(CREDENTIALS.id_token['email']): 
-		add_user(CREDENTIALS.to_json(), CREDENTIALS.id_token['email'], "", [])
+	add_user(CREDENTIALS.to_json(), CREDENTIALS.id_token['email'], "", [])
 
 	return {"email": CREDENTIALS.id_token['email']}, 200
 
