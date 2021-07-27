@@ -71,6 +71,7 @@ def generate_ics(periods_in: list):
 
 
 def feed_events():
+	http_auth = CREDENTIALS.authorize(httplib2.Http())
 	service = build('calendar', 'v3', credentials=CREDENTIALS)
 
 	now = datetime.utcnow().isoformat() + 'Z'
