@@ -177,8 +177,8 @@ def integrate():
 		}}
 	)
 
-	cred_json = users_col.find_one({'email': req_email}, {'json_token':1})
-	CREDENTIALS = client.AccessTokenCredentials.from_json(cred_json)
+	user_data = users_col.find_one({'email': req_email})
+	CREDENTIALS = client.AccessTokenCredentials.from_json(user_data['json_token'])
 
 	return feed_events(CREDENTIALS)
 
