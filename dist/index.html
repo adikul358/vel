@@ -478,8 +478,6 @@
 	<script src="./script.js"></script>
 	<script>
 		$('#googleSignInButton').click(function () {
-			$("#integrationText").addClass("hidden");
-			$("#integrationSpinner").removeClass("hidden");
 			auth2.grantOfflineAccess().then(signInCallback);
 		});
 
@@ -493,6 +491,8 @@
 					},
 					contentType: 'application/octet-stream; charset=utf-8',
 					success: function (result) {
+						$("#integrationText").addClass("hidden");
+						$("#integrationSpinner").removeClass("hidden");
 						var selectedValues = [];
 						$("#subjects :selected").each(function () {
 							selectedValues.push($(this).val());
