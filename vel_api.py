@@ -17,7 +17,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-CREDENTIALS = {}
 
 db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
 tts_col = db['tts']
@@ -71,8 +70,7 @@ def generate_ics(periods_in: list):
 
 
 def feed_events(creds):
-	http_auth = creds.authorize(httplib2.Http())
-	service = build('calendar', 'v3', http=http_auth)
+	service = build('calendar', 'v3', credentials=creds)
 
 	now = datetime.utcnow().isoformat() + 'Z'
 	events_result = service.events().list(calendarId='primary', timeMin=now,
@@ -125,8 +123,6 @@ def tts():
 	data = [i.strftime("%d %b %Y") for i in data]
 
 	return {'data': data}, 200
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
 
 # API Endpoint: Take form data and return ICS file
 @app.route('/api/ics', methods=['POST'])
