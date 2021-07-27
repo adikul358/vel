@@ -79,21 +79,25 @@ def feed_events(user_data):
 	http = creds.authorize(httplib2.Http())
 	service = build('calendar', 'v3', http=http)
 
-	now = datetime.utcnow().isoformat() + 'Z'
-	events_result = service.events().list(calendarId='qj09nk9ejfp5d7com6rt7lguuo@group.calendar.google.com', timeMin=now,
-																			maxResults=10, singleEvents=True,
-																			orderBy='startTime').execute()
-	events = events_result.get('items', [])
+	page_token = None
+	vel_calender_id = ""
+	while True:
+		calendar_list = service.calendarList().list(pageToken=page_token).execute()
+		for calendar_list_entry in calendar_list['items']:
+			calendar_summary = calendar_list_entry['summary']
+			print(calendar_summary)
+			if calendar_summary == "VEL":
+				vel_calender_id = calendar_list_entry['id']
+				break
+		page_token = calendar_list.get('nextPageToken')
+		if not page_token:
+			break
+	if vel_calender_id == "":
+		calendar = {'summary': 'VEL'}
+		created_calendar = service.calendars().insert(body=calendar).execute()
+		vel_calender_id = created_calendar['id']
 
-	events_out = []
-	if not events:
-			return {'data': 'No upcoming events found.'}
-	for event in events:
-			start = event['start'].get('dateTime', event['start'].get('date'))
-			events_out.append((start, event['summary']))
-	
-	print(events_out)
-	return events_out
+	return vel_calender_id
 
 
 def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
