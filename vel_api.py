@@ -73,7 +73,7 @@ def generate_ics(periods_in: list):
 def feed_events():
 	service = build('calendar', 'v3', credentials=CREDENTIALS)
 
-	now = datetime.datetime.utcnow().isoformat() + 'Z'
+	now = datetime.utcnow().isoformat() + 'Z'
 	events_result = service.events().list(calendarId='primary', timeMin=now,
 																			maxResults=10, singleEvents=True,
 																			orderBy='startTime').execute()
