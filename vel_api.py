@@ -81,11 +81,12 @@ def feed_events(creds):
 
 	events_out = []
 	if not events:
-			return 'No upcoming events found.'
+			return {'data': 'No upcoming events found.'}
 	for event in events:
 			start = event['start'].get('dateTime', event['start'].get('date'))
 			events_out.append((start, event['summary']))
-
+	
+	print(events_out)
 	return events_out
 
 
@@ -180,7 +181,7 @@ def integrate():
 	user_data = users_col.find_one({'email': req_email})
 	CREDENTIALS = client.AccessTokenCredentials.from_json(user_data['json_token'])
 
-	return feed_events(CREDENTIALS)
+	return Response(json.dumps(feed_events(CREDENTIALS)))
 
 
 if __name__ == "__main__":
