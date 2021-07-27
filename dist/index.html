@@ -169,7 +169,7 @@
 					</div>
 				</div>
 
-				<div class="my-5">
+				<div class="my-5" id="integrationText">
 					<p class="text-l text-gray-300">Integrate your Google Calendar with VEL to directly import all events to your
 						Google Calendar every week.</p>
 					<p class="mt-3 text-l text-gray-300">Check your selections below, these will be applied every week. If you
@@ -478,8 +478,8 @@
 	<script src="./script.js"></script>
 	<script>
 		$('#googleSignInButton').click(function () {
-			integrationText.addClass("hidden");
-			integrationSpinner.removeClass("hidden");
+			$("#integrationText").addClass("hidden");
+			$("#integrationSpinner").removeClass("hidden");
 			auth2.grantOfflineAccess().then(signInCallback);
 		});
 
@@ -507,8 +507,8 @@
 								subjects: selectedValues
 							}),
 							success: function (data) {
-								integrationSpinner.addClass("hidden");
-								integrationSuccess.removeClass("hidden");
+								$('#integrationSpinner').addClass("hidden");
+								$("#integrationSuccess").removeClass("hidden");
 								console.log(data)
 							},
 							contentType: "application/json",
