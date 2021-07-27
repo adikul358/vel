@@ -89,9 +89,9 @@ def feed_events(http_auth):
 	return events_out
 
 
-def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
+def add_user(auth_code: bytes, email: str, user_section: str, user_subjects: list):
 	result = users_col.insert_one({
-		"json_token": json_token,
+		"auth_code": auth_code,
 		"email": email,
 		"section": user_section,
 		"subjects": user_subjects
@@ -159,7 +159,7 @@ def signin():
 	)
 
 	if not check_user(CREDENTIALS.id_token['email']): 
-		add_user(CREDENTIALS.to_json(), CREDENTIALS.id_token['email'], "", [])
+		add_user(request_data, CREDENTIALS.id_token['email'], "", [])
 
 	return {"email": CREDENTIALS.id_token['email']}, 200
 
@@ -176,8 +176,12 @@ def integrate():
 		{'subjects': req_subjects, 'section': req_section}
 	)
 
-	cred_json = users_col.find_one({'email': req_email}, {'json_token':1})
-	CREDENTIALS = client.Credentials.from_json(cred_json)
+	auth_code = users_col.find_one({'email': req_email}, {'auth_code':1})
+	CREDENTIALS = client.credentials_from_clientsecrets_and_code(
+		os.getenv('CLIENT_SECRET_FILE'),
+		['https://www.googleapis.com/auth/calendar.events', 'profile', 'email'],
+		auth_code
+	)
 	http_auth = CREDENTIALS.authorize(httplib2.Http())
 
 	return feed_events(http_auth)
