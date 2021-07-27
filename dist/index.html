@@ -237,6 +237,7 @@
 							type: 'POST',
 							url: '/api/integrate',
 							data: JSON.stringify({
+								date: $("#timetable option").first().val(),
 								email: result.email,
 								section: $("#section option:selected").val(),
 								subjects: selectedValues

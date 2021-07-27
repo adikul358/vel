@@ -66,7 +66,7 @@ def generate_ics(periods_in: list):
 	return ics_filename
 
 
-def feed_events(user_data):
+def feed_events(user_data: dict, starting_date: str):
 	json_token = user_data['json_token']
 	email = user_data['email']
 	section = user_data['section']
@@ -91,11 +91,35 @@ def feed_events(user_data):
 		calendar = {'summary': 'VEL'}
 		created_calendar = service.calendars().insert(body=calendar).execute()
 		vel_calender_id = created_calendar['id']
+		created_calendar['defaultReminders'] = [
+			{'method': 'popup', 'minutes': 5},
+			{'method': 'popup', 'minutes': 0},
+		]
 		created_calendar['foregroundColor'] = '#ffffff'
 		created_calendar['backgroundColor'] = '#111827'
 		updated_calendar_list_entry = service.calendarList().update(calendarId=vel_calender_id, colorRgbFormat=True, body=created_calendar).execute()
+	
+	user_periods = generate_periods(starting_date, section, subjects)
+	added_events = []
 
-	return vel_calender_id
+	for i in user_periods:
+		event = {
+			'summary': i['name'],
+			'description': i['desc'],
+			'start': {
+				'dateTime': datetime.strptime(i['start'], "%Y-%m-%d %H:%M:%S%z").strftime("%Y-%m-%dT%H:%M:%S%z")
+			},
+			'end': {
+				'dateTime': datetime.strptime(i['start'], "%Y-%m-%d %H:%M:%S%z").strftime("%Y-%m-%dT%H:%M:%S%z")
+			},
+			'reminders': {
+				'useDefault': True,
+			},
+		}
+		event = service.events().insert(calendarId=vel_calender_id, body=event).execute()
+		added_events.append(event)
+
+	return Response(json.dumps({ "calenderID": vel_calender_id, "added_events": added_events}))
 
 
 def add_user(json_token: dict, email: str, user_section: str, user_subjects: list):
@@ -168,6 +192,7 @@ def integrate():
 	req_email = request_data['email']
 	req_subjects = request_data['subjects']
 	req_section = request_data['section']
+	req_date = request_data['date']
 
 	result = users_col.update_one(
 		{'email': req_email},
@@ -178,7 +203,7 @@ def integrate():
 	)
 
 	user_data = users_col.find_one({'email': req_email})
-	return Response(json.dumps(feed_events(user_data)))
+	return Response(json.dumps(feed_events(user_data, req_date)))
 
 
 if __name__ == "__main__":
