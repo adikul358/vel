@@ -82,7 +82,6 @@ def feed_events(user_data):
 		calendar_list = service.calendarList().list(pageToken=page_token).execute()
 		for calendar_list_entry in calendar_list['items']:
 			calendar_summary = calendar_list_entry['summary']
-			print(calendar_summary)
 			if calendar_summary == "VEL":
 				vel_calender_id = calendar_list_entry['id']
 				break
@@ -92,9 +91,8 @@ def feed_events(user_data):
 		calendar = {'summary': 'VEL'}
 		created_calendar = service.calendars().insert(body=calendar).execute()
 		vel_calender_id = created_calendar['id']
-	created_calendar['colorId'] = '#111827'
-	updated_calendar_list_entry = service.calendarList().update(
-			calendarId=vel_calender_id, body=created_calendar).execute()
+		created_calendar['colorId'] = '#111827'
+		updated_calendar_list_entry = service.calendarList().update(calendarId=vel_calender_id, body=created_calendar).execute()
 
 	return vel_calender_id
 
