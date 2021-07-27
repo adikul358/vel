@@ -119,6 +119,7 @@ def check_user(email: str):
 				creds = client.AccessTokenCredentials.from_json(result['json_token'])
 				http = creds.authorize(httplib2.Http())
 			except AccessTokenCredentialsError:
+				users_col.delete_many({'email': email})
 				return False
 	return False
 
