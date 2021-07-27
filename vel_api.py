@@ -91,8 +91,9 @@ def feed_events(user_data):
 		calendar = {'summary': 'VEL'}
 		created_calendar = service.calendars().insert(body=calendar).execute()
 		vel_calender_id = created_calendar['id']
+		created_calendar['foregroundColor'] = '#ffffff'
 		created_calendar['backgroundColor'] = '#111827'
-		updated_calendar_list_entry = service.calendarList().update(calendarId=vel_calender_id, body=created_calendar).execute()
+		updated_calendar_list_entry = service.calendarList().update(calendarId=vel_calender_id, colorRgbFormat=True, body=created_calendar).execute()
 
 	return vel_calender_id
 
