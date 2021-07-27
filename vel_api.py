@@ -70,9 +70,8 @@ def generate_ics(periods_in: list):
 	return ics_filename
 
 
-def feed_events():
-	http_auth = CREDENTIALS.authorize(httplib2.Http())
-	service = build('calendar', 'v3', credentials=CREDENTIALS)
+def feed_events(http_auth):
+	service = build('calendar', 'v3', http=http_auth)
 
 	now = datetime.utcnow().isoformat() + 'Z'
 	events_result = service.events().list(calendarId='primary', timeMin=now,
@@ -179,9 +178,9 @@ def integrate():
 
 	cred_json = users_col.find_one({'email': req_email}, {'json_token':1})
 	CREDENTIALS = client.Credentials.from_json(cred_json)
+	http_auth = CREDENTIALS.authorize(httplib2.Http())
 
-	return feed_events()
-
+	return feed_events(http_auth)
 
 
 if __name__ == "__main__":
