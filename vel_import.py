@@ -12,7 +12,9 @@ db = client.vel
 
 periods_global = []
 slots_global = []
+non_periods = []
 weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
+classes_global = ["Accounts", "Biology", "Business Studies (A)", "Business Studies (B)", "Chemistry", "Computer Science", "Economics (A)", "Economics (B)", "English (A)", "English (B)", "English (C)", "Entrepreneurship", "Fine Arts", "Geography", "Hindi", "History", "Home Science", "Informatics Practices (A)", "Informatics Practices (B)", "Math (A) - Applied", "Math (A) - Standard", "Math (B) - Applied", "Math (B) - Standard", "Physical Education", "Physics", "Political Science", "Psychology (A)", "Psychology (B)", "Psychology (C)", "Sanskrit", "Sociology", "Spanish"]
 
 def next_monday():
     return datetime.now().replace(minute=0, second=0, hour=0) + timedelta((0 - datetime.now().weekday()) % 7)
@@ -56,6 +58,8 @@ def parse_periods(periods_raw: list):
 				period_curr['assign'] = 'all'
 				period_curr['name'] = period_curr['name'][1:]
 
+			if period_curr['name'] not in classes_global: non_periods.append(period_curr['name'])
+
 			if period_curr['desc'] != "" and period_curr['desc'][0] == '!':
 				x = period_curr['desc'].split("!")
 				period_curr['desc'] = {}
@@ -75,10 +79,9 @@ elif datetime.strptime(starting_date, "%Y-%m-%d").strftime("%w") != "1":
 	raise ValueError("Entered date not a Monday")
 else: 
 	starting_date = datetime.strptime(starting_date, "%Y-%m-%d")
-
 starting_date = starting_date.replace(tzinfo=tz.tzoffset('IST', 5.5*60*60))
 
-with open('raw-csv/vel_w31.csv') as csv_file:
+with open('raw-csv/vel_w32.csv') as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	line_count = 0
 	slots_start_row = []
@@ -90,9 +93,13 @@ with open('raw-csv/vel_w31.csv') as csv_file:
 		elif line_count == 2:
 			slots_end_row = row
 			parse_slots(slots_start_row, slots_end_row)
-
 		else:
 			parse_periods(row)
+
+print()
+print(*non_periods, sep="\n")
+np_confirm = input("Confirm non-periods? y/n (y): ")
+if np_confirm != "" and np_confirm != "y": raise RuntimeError("Invalid non-periods")
 	
 tt_entry = {
 	"starting_date": datetime.strftime(starting_date, "%d %b %Y"),
