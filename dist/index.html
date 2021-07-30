@@ -110,9 +110,9 @@
 			</select>
 
 			<div class="mt-6 flex justify-end">
-				<button onclick="openImportModal()" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2"
+				<button onclick="openModal($('.import-modal'))" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2"
 					id="export-button">Export Events</button>
-				<button onclick="openIntegrationModal()"
+				<button onclick="openModal($('.integration-modal'))"
 					class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2 ml-4" id="integration-button">Integrate
 					Calendar</button>
 			</div>
@@ -121,7 +121,7 @@
 	</div>
 
 	<div
-		class="import-modal modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
+		class="import-modal fixed w-full h-100 inset-0 z-50 overflow-hidden hidden justify-center items-center animated fadeIn faster"
 		style="background: rgba(0,0,0,.7);">
 		<div class="shadow-lg modal-container bg-gray-900 w-full max-w-xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
 			<div class="modal-content py-4 text-left px-6">
@@ -153,7 +153,7 @@
 		</div>
 	</div>
 	<div
-		class="integration-modal modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
+		class="integration-modal fixed w-full h-100 inset-0 z-50 overflow-hidden hidden justify-center items-center animated fadeIn faster"
 		style="background: rgba(0,0,0,.7);">
 		<div class="shadow-lg modal-container bg-gray-900 w-full max-w-xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
 			<div class="modal-content py-4 text-left px-6">
@@ -191,12 +191,7 @@
 						</tbody>
 					</table>
 					<div class="flex flex-row justify-center mx-auto mt-6">
-
-						<button id="googleSignInButton"
-							class="bg-gray-700 hover:bg-gray-800 rounded px-6 py-2 flex flex-row justify-center items-center">
-							<img src="https://img.icons8.com/color/48/000000/google-logo.png" class="h-5 pr-6 -ml-3">
-							<p class="text-gray-300 text-l text-center font-bold">Sign in with Google</p>
-						</button>
+						<img src="btn_google.png" class="h-12 cursor-pointer" id="googleSignInButton">
 					</div>
 				</div>
 
@@ -478,6 +473,8 @@
 	<script src="./script.js"></script>
 	<script>
 		$('#googleSignInButton').click(function () {
+			$(this).attr("src", "btn_google_active.png");
+			setTimeout(() => $(this).attr("src", "btn_google_hover.png"),100);
 			auth2.grantOfflineAccess().then(signInCallback);
 		});
 

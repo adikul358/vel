@@ -48,56 +48,57 @@ $("#export-button").click(function () {
 
 // UI
 
-const modal = document.querySelectorAll(".modal");
-const importModal = document.querySelector(".import-modal");
-const integrationModal = document.querySelector(".integration-modal");
-const importCloseButton = document.querySelectorAll(".import-modal-close");
-const integrationCloseButton = document.querySelectorAll(
-	".integration-modal-close"
-);
 
-const modalClose = (e) => {
-	e.classList.remove("fadeIn");
-	e.classList.add("fadeOut");
+const closeModal = (e) => {
+	e.removeClass("fadeIn");
+	e.addClass("fadeOut");
 	setTimeout(() => {
-		e.style.display = "none";
+		e.removeClass("flex");
+		e.addClass("hidden");
 	}, 500);
 };
 
-const openImportModal = () => {
-	importModal.classList.remove("fadeOut");
-	importModal.classList.add("fadeIn");
-	importModal.style.display = "flex";
+const openModal = (e) => {
+	e.removeClass("hidden");
+	e.addClass("flex");
+	e.removeClass("fadeOut");
+	e.addClass("fadeIn");
+	e.css("display", "flex")
 };
 
-const openIntegrationModal = () => {
-	integrationModal.classList.remove("fadeOut");
-	integrationModal.classList.add("fadeIn");
-	integrationModal.style.display = "flex";
-};
+jQuery(document).ready(function(){ 
 
-for (let i = 0; i < importCloseButton.length; i++) {
-	const elements = importCloseButton[i];
-	elements.onclick = (e) => modalClose(importModal);
-}
-
-for (let i = 0; i < integrationCloseButton.length; i++) {
-	const elements = integrationCloseButton[i];
-	elements.onclick = (e) => modalClose(integrationModal);
-}
-
-window.onclick = function (event) {
-	if (event.target == importModal) modalClose(importModal);
-	if (event.target == integrationModal) modalClose(integrationModal);
-};
-
-$("#integration-button").click(function () {
-	var subjectsStr = "";
-	$("#subjects :selected").each(function () {
-		subjectsStr += $(this).html() + ", ";
+	const importModal = $(".import-modal")
+	const integrationModal = $(".integration-modal");
+	
+	$(".import-modal-close").click(() => closeModal(importModal));
+	$(".integration-modal-close").click(() => closeModal(integrationModal));
+	
+	window.onclick = function (event) {
+		if (event.target == importModal[0]) closeModal(importModal);
+		if (event.target == integrationModal[0]) closeModal(integrationModal);
+	};
+	
+	$("#integration-button").click(function () {
+		var subjectsStr = "";
+		$("#subjects :selected").each(function () {
+			subjectsStr += $(this).html() + ", ";
+		});
+		subjectsStr = subjectsStr.substring(0, subjectsStr.length - 2);
+	
+		$("#integration-section").html($("#section :selected").val());
+		$("#integration-subjects").html(subjectsStr);
 	});
-	subjectsStr = subjectsStr.substring(0, subjectsStr.length - 2);
 
-	$("#integration-section").html($("#section :selected").val());
-	$("#integration-subjects").html(subjectsStr);
-});
+	$("#googleSignInButton").hover(function () {
+		$(this).attr("src", "btn_google_hover.png");
+	}, function () {
+		$(this).attr("src", "btn_google.png");
+	});
+	$("#googleSignInButton").mousedown(function () {
+		$("#googleSignInButton").attr("src", "btn_google_active.png");
+	});
+	$("#googleSignInButton").mouseup(function () {
+		$("#googleSignInButton").attr("src", "btn_google_hover.png");
+	});
+})
