@@ -27,6 +27,9 @@ def parse_slots(start_raw: list, end_raw: list):
 	end_raw = end_raw[1:]
 	
 	for i in range(len(start_raw)):
+		if len(start_raw[i]) == 3: start_raw[i] = f'0{start_raw[i]}'
+		if len(end_raw[i]) == 3: end_raw[i] = f'0{end_raw[i]}'
+
 		start_time = timedelta(hours=int(start_raw[i][0:2]), minutes=int(start_raw[i][2:4]))
 		end_time = timedelta(hours=int(end_raw[i][0:2]), minutes=int(end_raw[i][2:4]))
 		slots_global.append((start_time, end_time))
@@ -81,7 +84,7 @@ else:
 	starting_date = datetime.strptime(starting_date, "%Y-%m-%d")
 starting_date = starting_date.replace(tzinfo=tz.tzoffset('IST', 5.5*60*60))
 
-with open('raw-csv/vel_w32.csv') as csv_file:
+with open('raw-csv/vel_w31.csv') as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	line_count = 0
 	slots_start_row = []
