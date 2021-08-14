@@ -2,6 +2,22 @@
 <html lang="en">
 
 <head>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+	</script>
+	<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+	</script>
+	<script>
+		function start() {
+			gapi.load('auth2', function () {
+				auth2 = gapi.auth2.init({
+					client_id: '656751888542-u4p01mh6lqcajqfv48me2jr70eh6b48f.apps.googleusercontent.com',
+					scope: 'https://www.googleapis.com/auth/calendar'
+				});
+			});
+		}
+	</script>
+
+
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Primary Meta Tags -->
@@ -94,22 +110,24 @@
 			</select>
 
 			<div class="mt-6 flex justify-end">
-				<button onclick="openModal()" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-3 py-2"
-					id="export-button">Export
-					Events</button>
+				<button onclick="openModal($('.import-modal'))" class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2"
+					id="export-button">Export Events</button>
+				<button onclick="openModal($('.integration-modal'))"
+					class="bg-gray-700 hover:bg-gray-800 text-gray-300 rounded px-4 py-2 ml-4" id="integration-button">Integrate
+					Calendar</button>
 			</div>
 
 		</div>
 	</div>
 
 	<div
-		class="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
+		class="import-modal fixed w-full h-100 inset-0 z-50 overflow-hidden hidden justify-center items-center animated fadeIn faster"
 		style="background: rgba(0,0,0,.7);">
 		<div class="shadow-lg modal-container bg-gray-900 w-full max-w-xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
 			<div class="modal-content py-4 text-left px-6">
 				<div class="flex justify-between items-center pb-3">
 					<p class="text-2xl font-bold text-gray-300">Importing ICS</p>
-					<div class="modal-close cursor-pointer z-50">
+					<div class="import-modal-close cursor-pointer z-50">
 						<svg class="fill-current text-gray-300" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 							viewBox="0 0 18 18">
 							<path
@@ -128,8 +146,6 @@
 						<li><a
 								href="https://support.microsoft.com/en-us/office/import-calendars-into-outlook-8e8364e1-400e-4c0f-a573-fe76b5a2d379"
 								class="underline hover:text-gray-400 leading-8">Outlook Calendar</a></li>
-						<li><a href="https://support.apple.com/en-in/guide/calendar/icl1023/mac"
-								class="underline hover:text-gray-400 leading-8">Apple Calendar (macOS)</a></li>
 					</ul>
 				</div>
 
@@ -147,9 +163,373 @@
 				href="/Privacy Policy - VEL.pdf">Privacy Policy</a> • <a class="underline hover:text-gray-500" target="_blank"
 				href="https://github.com/adikul358/vel">Github</a></p>
 	</div>
+	<div
+		class="integration-modal fixed w-full h-100 inset-0 z-50 overflow-hidden hidden justify-center items-center animated fadeIn faster"
+		style="background: rgba(0,0,0,.7);">
+		<div class="shadow-lg modal-container bg-gray-900 w-full max-w-xl mx-auto rounded shadow-lg z-50 overflow-y-auto">
+			<div class="modal-content py-4 text-left px-6">
+				<div class="flex justify-between items-center pb-3">
+					<p class="text-2xl font-bold text-gray-300">Google Calendar Integration</p>
+					<div class="integration-modal-close cursor-pointer z-50">
+						<svg class="fill-current text-gray-300" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+							viewBox="0 0 18 18">
+							<path
+								d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z">
+							</path>
+						</svg>
+					</div>
+				</div>
+
+				<div class="my-5" id="integrationText">
+					<p class="text-l text-gray-300">Integrate your Google Calendar with VEL to directly import all events to your
+						Google Calendar every week.</p>
+					<p class="mt-3 text-l text-gray-300">Check your selections below, these will be applied every week. If you
+						want to change them afterwards, simply integrate again with the same account with the desired changes.</p>
+					<p class="mt-3 text-l text-gray-300">If you want to remove your integration, delete the VEL calendar from your
+						Google account.</p>
+					<table class="table-fixed text-l text-gray-300 w-full mt-3 border-b border-t border-gray-500">
+						<tbody class="divide-y divide-gray-500">
+							<tr class="divide-x divide-gray-500">
+								<td class="w-1/4 font-bold text-right p-2 align-top">Section</td>
+								<td class="w-3/4 p-2" id="integration-section">
+									</tdclass>
+							</tr>
+							<tr class="divide-x divide-gray-500">
+								<td class="w-1/4 font-bold text-right p-2 align-top">Subjects</td>
+								<td class="w-3/4 p-2" id="integration-subjects">
+									</tdclass>
+							</tr>
+						</tbody>
+					</table>
+					<div class="flex flex-row justify-center mx-auto mt-6">
+						<img src="btn_google.png" class="h-12 cursor-pointer" id="googleSignInButton">
+					</div>
+				</div>
+
+				<div class="my-5 hidden" id="integrationSpinner">
+					<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="160px"
+						height="160px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"
+						style="margin: auto; background: rgba(0,0,0,0) none repeat scroll 0% 0%; display: block;">
+						<polygon fill="#16478b" points="31.6,19 13.9,19 5,34.3 13.9,49.7 31.6,49.7 40.4,34.3">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="0s"></animate>
+						</polygon>
+						<polygon fill="#00579c" points="58.9,3.1 41.1,3.1 32.3,18.4 41.1,33.7 58.9,33.7 67.7,18.4">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="-0.14285714285714285s"></animate>
+						</polygon>
+						<polygon fill="#0785c3" points="58.9,34.6 41.1,34.6 32.3,50 41.1,65.3 58.9,65.3 67.7,50">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="-0.2857142857142857s"></animate>
+						</polygon>
+						<polygon fill="#7fb6e1" points="58.9,66.3 41.1,66.3 32.3,81.6 41.1,96.9 58.9,96.9 67.7,81.6">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="-0.42857142857142855s"></animate>
+						</polygon>
+						<polygon fill="#86a03a" points="86.1,50.6 68.4,50.6 59.6,65.9 68.4,81.2 86.1,81.2 95,65.9">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="-0.5714285714285714s"></animate>
+						</polygon>
+						<polygon fill="#16478b" points="86.1,19 68.4,19 59.6,34.3 68.4,49.7 86.1,49.7 95,34.3">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="-0.7142857142857143s"></animate>
+						</polygon>
+						<polygon fill="#00579c" points="31.6,50.6 13.9,50.6 5,65.9 13.9,81.2 31.6,81.2 40.4,65.9">
+							<animate attributeName="opacity" repeatCount="indefinite" dur="1s" keyTimes="0;0.5;1" values="1;0.5;1"
+								begin="-0.8571428571428571s"></animate>
+						</polygon>
+					</svg>
+				</div>
+
+				<div class="my-5 flex-row flex justify-center hidden" id="integrationSuccess">
+					<div class="flex items-center">
+						<svg width="75" height="75" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+							xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100"
+							style="enable-background:new 0 0 100 100;" xml:space="preserve" preserveAspectRatio="xMidYMid meet">
+							<style type="text/css">
+								.circle {
+									fill: none;
+									stroke: #28b351;
+									stroke-width: 5;
+									stroke-linecap: round;
+									stroke-miterlimit: 10;
+								}
+
+								.circle-dash {
+									fill: none;
+									stroke: #28b351;
+									stroke-width: 5;
+									stroke-linecap: round;
+									stroke-miterlimit: 10;
+								}
+
+								.check {
+									fill: none;
+									stroke: #28b351;
+									stroke-width: 5;
+									stroke-linecap: square;
+									stroke-linejoin: round;
+									stroke-miterlimit: 10;
+								}
+
+								.check-dash {
+									fill: none;
+									stroke: #28b351;
+									stroke-width: 5;
+									stroke-linecap: round;
+									stroke-linejoin: round;
+									stroke-miterlimit: 10;
+								}
+
+								.check {
+									stroke-dasharray: 60 100;
+									animation: check 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards 0.15s;
+									-webkit-animation: check 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards 0.15s;
+									-moz-animation: check 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards 0.15s;
+									-o-animation: check 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards 0.15s;
+									opacity: 0;
+								}
+
+								@-webkit-keyframes check {
+									from {
+										stroke-dashoffset: 60;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 00;
+										opacity: 1;
+									}
+								}
+
+								@-moz-keyframes check {
+									from {
+										stroke-dashoffset: 60;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 00;
+										opacity: 1;
+									}
+								}
+
+								@keyframes check {
+									from {
+										stroke-dashoffset: 60;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 00;
+										opacity: 1;
+									}
+								}
+
+								.check-dash {
+									stroke-dasharray: 10 100;
+									animation: check-dash 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards;
+									-webkit-animation: check-dash 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards;
+									-moz-animation: check-dash 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards;
+									-o-animation: check-dash 1.2s cubic-bezier(0.5, 0, 0.6, 1) forwards;
+								}
+
+								@-webkit-keyframes check-dash {
+									from {
+										stroke-dashoffset: 120;
+									}
+
+									to {
+										stroke-dashoffset: 45;
+									}
+								}
+
+								@-moz-keyframes check-dash {
+									from {
+										stroke-dashoffset: 120;
+									}
+
+									to {
+										stroke-dashoffset: 45;
+									}
+								}
+
+								@keyframes check-dash {
+									from {
+										stroke-dashoffset: 120;
+									}
+
+									to {
+										stroke-dashoffset: 45;
+									}
+								}
+
+								.circle {
+									stroke-dasharray: 300 300;
+									animation: circle 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.15s;
+									-webkit-animation: circle 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.15s;
+									-moz-animation: circle 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.15s;
+									-o-animation: circle 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.15s;
+									opacity: 0;
+								}
+
+								@-webkit-keyframes circle {
+									from {
+										stroke-dashoffset: 300;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 0;
+										opacity: 1;
+									}
+								}
+
+								@-moz-keyframes circle {
+									from {
+										stroke-dashoffset: 300;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 0;
+										opacity: 1;
+									}
+								}
+
+								@keyframes circle {
+									from {
+										stroke-dashoffset: 300;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 0;
+										opacity: 1;
+									}
+								}
+
+								.circle-dash {
+									stroke-dasharray: 10 300;
+									animation: circledash 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.05s;
+									-webkit-animation: circledash 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.05s;
+									-moz-animation: circledash 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.05s;
+									-o-animation: circledash 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards 0.05s;
+									opacity: 0;
+								}
+
+								@-webkit-keyframes circledash {
+									from {
+										stroke-dashoffset: 320;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 20;
+										opacity: 1;
+									}
+								}
+
+								@-moz-keyframes circledash {
+									from {
+										stroke-dashoffset: 320;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 20;
+										opacity: 1;
+									}
+								}
+
+								@keyframes circledash {
+									from {
+										stroke-dashoffset: 320;
+										opacity: 1;
+									}
+
+									to {
+										stroke-dashoffset: 20;
+										opacity: 1;
+									}
+								}
+							</style>
+							<g>
+								<circle class="circle" cx="50" cy="49.9999657" r="47.5" />
+								<circle class="circle-dash" cx="50" cy="49.9999657" r="47.5" />
+								<polyline class="check" points="28.6469955,52.0561066 42.2152748,65.6243896 71.3530045,36.4866562 	" />
+								<polyline class="check-dash"
+									points="28.6469955,52.0561066 42.2152748,65.6243896 71.3530045,36.4866562 	" />
+							</g>
+						</svg>
+						<p class="text-xl text-gray-300 ml-6 flex-grow">Calendar Integrated Successfully.</p>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="flex flex-col w-full mt-auto py-4 items-center" style="background-color: #080b11">
+		<p class="text-s text-white font-extralight">Made by <a class="text-blue-500 hover:text-blue-600"
+				href="https://github.com/adikul358">Aditya Kulshrestha</a></p>
+		<p class="text-xs text-gray-400 font-thin mt-3"><a class="underline hover:text-gray-500" target="_blank"
+				href="/Privacy Policy - VEL.pdf">Privacy Policy</a> • <a class="underline hover:text-gray-500" target="_blank"
+				href="https://github.com/adikul358/vel">Github</a></p>
+	</div>
+
+
 	<!-- partial -->
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
 	<script src="./script.js"></script>
+	<script>
+		$('#googleSignInButton').click(function () {
+			$(this).attr("src", "btn_google_active.png");
+			setTimeout(() => $(this).attr("src", "btn_google_hover.png"),100);
+			auth2.grantOfflineAccess().then(signInCallback);
+		});
+
+		function signInCallback(authResult) {
+			if (authResult['code']) {
+				$.ajax({
+					type: 'POST',
+					url: '/api/signin',
+					headers: {
+						'X-Requested-With': 'XMLHttpRequest'
+					},
+					contentType: 'application/octet-stream; charset=utf-8',
+					success: function (result) {
+						$("#integrationText").addClass("hidden");
+						$("#integrationSpinner").removeClass("hidden");
+						var selectedValues = [];
+						$("#subjects :selected").each(function () {
+							selectedValues.push($(this).val());
+						});
+						$.ajax({
+							type: 'POST',
+							url: '/api/integrate',
+							data: JSON.stringify({
+								date: $("#timetable option").first().val(),
+								email: result.email,
+								section: $("#section option:selected").val(),
+								subjects: selectedValues
+							}),
+							success: function (data) {
+								$('#integrationSpinner').addClass("hidden");
+								$("#integrationSuccess").removeClass("hidden");
+								console.log(data)
+							},
+							contentType: "application/json",
+							processData: false
+						});
+					},
+					processData: false,
+					data: authResult['code']
+				});
+			}
+		}
+	</script>
+
 
 </body>
 

@@ -8,5 +8,7 @@ vel.ini
 .DS_Store
 .vscode
 vel.sock
-gen-csv
+gen-ics
 .env
+
+client_secret.json
