@@ -53,14 +53,11 @@ const closeModal = (e) => {
 	e.removeClass("fadeIn");
 	e.addClass("fadeOut");
 	setTimeout(() => {
-		e.removeClass("flex");
-		e.addClass("hidden");
+		e.css("display", "none")
 	}, 500);
 };
 
 const openModal = (e) => {
-	e.removeClass("hidden");
-	e.addClass("flex");
 	e.removeClass("fadeOut");
 	e.addClass("fadeIn");
 	e.css("display", "flex")
