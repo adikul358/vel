@@ -1,11 +1,10 @@
-// API
-
-const saveBlob = (blob, fileName) => {
+function saveBlob(blob, fileName) {
 	var a = document.createElement('a');
 	a.href = window.URL.createObjectURL(blob);
 	a.download = fileName;
 	a.dispatchEvent(new MouseEvent('click'));
 }
+
 
 $.ajax({
 	type: 'POST',
@@ -43,62 +42,27 @@ $("#export-button").click(function () {
 	xhr.send(payload);
 });
 
+const modal = document.querySelector(".main-modal");
+const closeButton = document.querySelectorAll(".modal-close");
 
-
-
-// UI
-
-
-const closeModal = (e) => {
-	e.removeClass("fadeIn");
-	e.addClass("fadeOut");
+const modalClose = () => {
+	modal.classList.remove("fadeIn");
+	modal.classList.add("fadeOut");
 	setTimeout(() => {
-		e.removeClass("flex");
-		e.addClass("hidden");
+		modal.style.display = "none";
 	}, 500);
 };
 
-const openModal = (e) => {
-	e.removeClass("hidden");
-	e.addClass("flex");
-	e.removeClass("fadeOut");
-	e.addClass("fadeIn");
-	e.css("display", "flex")
+const openModal = () => {
+	modal.classList.remove("fadeOut");
+	modal.classList.add("fadeIn");
+	modal.style.display = "flex";
 };
 
-jQuery(document).ready(function(){ 
-
-	const importModal = $(".import-modal")
-	const integrationModal = $(".integration-modal");
-	
-	$(".import-modal-close").click(() => closeModal(importModal));
-	$(".integration-modal-close").click(() => closeModal(integrationModal));
-	
+for (let i = 0; i < closeButton.length; i++) {
+	const elements = closeButton[i];
+	elements.onclick = (e) => modalClose();
 	window.onclick = function (event) {
-		if (event.target == importModal[0]) closeModal(importModal);
-		if (event.target == integrationModal[0]) closeModal(integrationModal);
+		if (event.target == modal) modalClose();
 	};
-	
-	$("#integration-button").click(function () {
-		var subjectsStr = "";
-		$("#subjects :selected").each(function () {
-			subjectsStr += $(this).html() + ", ";
-		});
-		subjectsStr = subjectsStr.substring(0, subjectsStr.length - 2);
-	
-		$("#integration-section").html($("#section :selected").val());
-		$("#integration-subjects").html(subjectsStr);
-	});
-
-	$("#googleSignInButton").hover(function () {
-		$(this).attr("src", "btn_google_hover.png");
-	}, function () {
-		$(this).attr("src", "btn_google.png");
-	});
-	$("#googleSignInButton").mousedown(function () {
-		$("#googleSignInButton").attr("src", "btn_google_active.png");
-	});
-	$("#googleSignInButton").mouseup(function () {
-		$("#googleSignInButton").attr("src", "btn_google_hover.png");
-	});
-})
+}

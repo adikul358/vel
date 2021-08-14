@@ -7,9 +7,9 @@
 	margin-top: auto;
 }
 
-/* .import-modal, .integration-modal {
+.main-modal {
 	display: none;
-} */
+}
 
 .animated {
 	-webkit-animation-duration: 1s;
