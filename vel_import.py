@@ -61,6 +61,10 @@ def parse_periods(periods_raw: list):
 				period_curr['assign'] = 'all'
 				period_curr['name'] = period_curr['name'][1:]
 
+			if period_curr['name'][0] == '%':
+				period_curr['assign'] = 'others'
+				period_curr['name'] = period_curr['name'][1:]
+
 			if period_curr['name'] not in classes_global: non_periods.append(period_curr['name'])
 
 			if period_curr['desc'] != "" and period_curr['desc'][0] == '!':
@@ -84,7 +88,7 @@ else:
 	starting_date = datetime.strptime(starting_date, "%Y-%m-%d")
 starting_date = starting_date.replace(tzinfo=tz.tzoffset('IST', 5.5*60*60))
 
-with open('raw-csv/vel_w31.csv') as csv_file:
+with open(f'raw-csv/vel_w{starting_date.strftime("%V")}.csv') as csv_file:
 	csv_reader = csv.reader(csv_file, delimiter=',')
 	line_count = 0
 	slots_start_row = []

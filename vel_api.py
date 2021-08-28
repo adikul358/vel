@@ -15,7 +15,7 @@ load_dotenv()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar', 'profile', 'email']
 
-db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@localhost:27017/?authSource=admin').vel
+db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@{os.getenv("MONGO_IP")}:27017/?authSource=admin').vel
 tts_col = db['tts']
 log_col = db['log']
 users_col = db['users']
@@ -37,11 +37,22 @@ def generate_periods(starting_date: str, section: str, subjects: list):
 	periods_raw = tts_col.find_one({"starting_date": starting_date})['periods_raw']
 	periods_out = []
 	for i in periods_raw:
-		if i['assign'] == "all" or i['name'].lower() in subjects:
+		if i['assign'] == "all" or i['assign'] == "others" or i['name'].lower() in subjects:
 			if type(i['desc']) == type({}):
 				if section in i['desc'].keys():
 					i['desc'] = i['desc'][section]
 			periods_out.append(i)
+
+	del_items = []
+	for i in range(len(periods_out)):
+		if periods_out[i]['assign'] == "others":
+			a = list(filter(lambda x : x['start'] == periods_out[i]['start'] and x['assign'] != "others", periods_out))
+			print(a)
+			if len(a) > 0: del_items.append(i)
+
+	for i in del_items: 
+		print(periods_out[i])
+		periods_out.pop(i)
 
 	return periods_out
 
@@ -173,9 +184,10 @@ def ics():
 	req_subjects = request_data['subjects']
 
 	periods = generate_periods(req_date, req_section, req_subjects)
+	return {'data': periods}, 200
 	ics_file = generate_ics(periods)
 
-	# log_result = log_stat(req_date, req_section, req_subjects, ics_file)
+	log_result = log_stat(req_date, req_section, req_subjects, ics_file)
 
 	print(f'Sending file {os.getenv("CLIENT_ICS")}{ics_file}')
 	return send_from_directory(directory=os.getenv("CLIENT_ICS"), path=ics_file, as_attachment=True), 200
