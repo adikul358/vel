@@ -184,7 +184,6 @@ def ics():
 	req_subjects = request_data['subjects']
 
 	periods = generate_periods(req_date, req_section, req_subjects)
-	return {'data': periods}, 200
 	ics_file = generate_ics(periods)
 
 	log_result = log_stat(req_date, req_section, req_subjects, ics_file)
