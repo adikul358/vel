@@ -16,7 +16,7 @@ load_dotenv()
 SCOPES = ['https://www.googleapis.com/auth/calendar', 'profile', 'email']
 
 if os.getenv("ENV") == "production": 
-	db = MongoClient('localhost', 27017)
+	db = MongoClient('localhost', 27017).vel
 else:
 	db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@{os.getenv("MONGO_IP")}:27017/?authSource=admin').vel
 tts_col = db['tts']
