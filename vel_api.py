@@ -37,7 +37,7 @@ def generate_periods(starting_date: str, section: str, subjects: list):
 	periods_raw = tts_col.find_one({"starting_date": starting_date})['periods_raw']
 	periods_out = []
 	for i in periods_raw:
-		if i['assign'] == "all" or i['assign'] == "others" or i['name'].lower() in subjects:
+		if i['assign'] == "all" or i['assign'] == "others" or i['subject'].lower() in subjects:
 			if type(i['desc']) == type({}):
 				if section in i['desc'].keys():
 					i['desc'] = i['desc'][section]

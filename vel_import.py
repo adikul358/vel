@@ -54,25 +54,37 @@ def parse_periods(periods_raw: list):
 				'start': (starting_date + timedelta(days=offset) + slots_global[s][0]).strftime("%Y-%m-%d %H:%M:%S%z"),
 				'end': (starting_date + timedelta(days=offset) + slots_global[s][1]).strftime("%Y-%m-%d %H:%M:%S%z"),
 				'desc': "\n".join(j[1:]).strip(),
+				'subject': j[0].strip(),
 				'assign': "subject"
 			}
 
-			if period_curr['name'][0] == '@':
-				period_curr['assign'] = 'all'
-				period_curr['name'] = period_curr['name'][1:]
+			if period_curr["name"][0] == '$':
+				extended_end = timedelta(hours=int(period_curr["name"][1:3]), minutes=int(period_curr["name"][3:5]))
+				period_curr["end"] = (starting_date + timedelta(days=offset) + extended_end).strftime("%Y-%m-%d %H:%M:%S%z")
+				period_curr["name"] = period_curr["name"][5:]
 
-			if period_curr['name'][0] == '%':
-				period_curr['assign'] = 'others'
-				period_curr['name'] = period_curr['name'][1:]
+			if period_curr["name"][0] == '@':
+				period_curr["assign"] = 'all'
+				period_curr["name"] = period_curr["name"][1:]
 
-			if period_curr['name'] not in classes_global: non_periods.append(period_curr['name'])
+			if period_curr["name"][0] == '%':
+				period_curr["assign"] = 'others'
+				period_curr["name"] = period_curr["name"][1:]
 
-			if period_curr['desc'] != "" and period_curr['desc'][0] == '!':
-				x = period_curr['desc'].split("!")
-				period_curr['desc'] = {}
+			if period_curr["name"][0] == '#':
+				desc_split = period_curr["desc"].split('\n')
+				period_curr["subject"] = desc_split[0]
+				period_curr["desc"] = "\n".join(desc_split[1:]).strip()
+				period_curr["name"] = " - ".join([ period_curr["name"][1:], period_curr["subject"] ])
+
+			if period_curr["subject"] not in classes_global: non_periods.append(period_curr["name"])
+
+			if period_curr["desc"] != "" and period_curr["desc"][0] == '!':
+				x = period_curr["desc"].split("!")
+				period_curr["desc"] = {}
 				for k in x[1:]: 
 					a = k.split("\n")
-					period_curr['desc'][a[0]] = a[1]
+					period_curr["desc"][a[0]] = a[1]
 
 			periods_global.append(period_curr)
 		s += 1
