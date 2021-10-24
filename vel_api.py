@@ -15,7 +15,7 @@ load_dotenv()
 
 SCOPES = ['https://www.googleapis.com/auth/calendar', 'profile', 'email']
 
-db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@{os.getenv("MONGO_IP")}:27017/?authSource=admin').vel
+db = MongoClient(f'mongodb://admin:{os.getenv("MONGO_PASSWORD")}@{os.getenv("MONGO_IP")}:27017/?authSource=admin',connect=False).vel
 tts_col = db['tts']
 log_col = db['log']
 users_col = db['users']
